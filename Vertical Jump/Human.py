@@ -8,7 +8,7 @@ class Human:
         self.body_size = body_size
         self.squat_depth = squat_depth
     
-    def evaluate_mcp(self): # обхват голени, размер туловища
+    def evaluate_mcp(self):
         if self.human.mcp == -1:
 
             if self.human.sex == "M":
