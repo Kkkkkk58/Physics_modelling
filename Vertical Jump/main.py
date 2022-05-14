@@ -1,5 +1,5 @@
-
+from graphics import set_gui
 
 if __name__ == "__main__":
-    pass
+    set_gui()
 
