@@ -31,7 +31,7 @@ def confirm():
         Entries[Values.IN_LEG_GIRTH].get(), Entries[Values.IN_BODY_SIZE].get(), Entries[Values.IN_SQUAT].get()]
 
     if any([is_adv_digit(str(x)) and int(x) < 0 for x in Values_connector]):
-        messagebox.showerror("ВЫ ВВЕЛИ КРИНЖ")
+        messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
     # print( Entries[Values.IN_WEIGHT].get(), Entries[Values.IN_HEIGHT].get(), Entries[Values.IN_SEX].get(), Entries[Values.IN_LEG_GIRTH].get(), \
     #     Entries[Values.IN_BODY_SIZE].get(), Entries[Values.IN_SQUAT].get()  )
     
