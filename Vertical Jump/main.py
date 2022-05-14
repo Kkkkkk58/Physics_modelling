@@ -3,13 +3,15 @@ import matplotlib
 from tkinter import *
 
 class Visualizer(Tk):
+    
     def __init__(self):
         super(Visualizer, self).__init__()
         self.title("Vertical Jump")
         #self.minsize(1200, 1200)
         self.wm_iconbitmap("pp.ico")
-        param = self.enter_data()
-        print(param)
+        self.enter_data()
+        #param = self.enter_data()
+        #print(param)
 
     def quit(self):
         pass
@@ -28,31 +30,39 @@ class Visualizer(Tk):
         report = ""
         entry = Entry(fg="yellow", bg="blue",  textvariable=report, width=50)
         entry.pack()
+        entry.bind("<Return>", self.on_click)
         input_btn = Button(text="Ввести", command=self.on_click(entry)).pack()
         print(report)
         #input_btn.grid(column=1, row= 0)
         #entry.grid(column=0, row=0)
-        param = entry.get()
-        return param
+        #param = entry.get()
+        #return param
 
 
-
-
-class VerticalJumpEvaluation:
-    def __init__(self, mass, height, sex, squat_depth, mcp = -1):
+class Human:
+    def __init__(self, mass, height, sex, leg_girth, body_size, squat_depth, mcp = -1):
         self.mass = mass
         self.height = height
         self.sex = sex
         self.mcp = mcp
+        self.leg_girth = leg_girth
+        self.body_size = body_size
         self.squat_depth = squat_depth
-    
-    def evaluate_mcp(self, leg_girth, body_size): # обхват голени, размер туловища
-        if self.mcp == -1:
 
-            if self.sex == "M":
-                self.mcp = 11.066 + 0.675 * self.height - 0.173 * leg_girth - 0.299 * body_size
+
+class VerticalJumpEvaluation:
+    def __init__(self, human):
+        self.human = human
+    
+    def evaluate_mcp(self): # обхват голени, размер туловища
+        if self.human.mcp == -1:
+
+            if self.human.sex == "M":
+                self.human.mcp = 11.066 + 0.675 * self.human.height - \
+                    0.173 * self.human.leg_girth - 0.299 * self.human.body_size
             else:
-                self.mcp = -4.667 + 0.289 * self.height + 0.383 * leg_girth + 0.301 * body_size
+                self.mcp = -4.667 + 0.289 * self.height + \
+                    0.383 * self.human.leg_girth + 0.301 * self.human.body_size
 
         return self.mcp
     
