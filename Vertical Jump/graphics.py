@@ -1,4 +1,5 @@
 from enum import IntEnum
+from tkinter import messagebox
 from tkinter.tix import Tk
 from tkinter import *
 
@@ -21,10 +22,19 @@ Labels = []
 sex=StringVar()
 sex.set("F")
 
+Values_connector = []
+is_adv_digit = lambda x: x.isdigit() if x[:1]!='-' else x[1:].isdigit()
 
 def confirm():
-    print( Entries[Values.IN_WEIGHT].get(), Entries[Values.IN_HEIGHT].get(), Entries[Values.IN_SEX].get(), Entries[Values.IN_LEG_GIRTH].get(), \
-        Entries[Values.IN_BODY_SIZE].get(), Entries[Values.IN_SQUAT].get()  )
+    global Values_connector
+    Values_connector = [Entries[Values.IN_WEIGHT].get(), Entries[Values.IN_HEIGHT].get(), Entries[Values.IN_SEX].get(),
+        Entries[Values.IN_LEG_GIRTH].get(), Entries[Values.IN_BODY_SIZE].get(), Entries[Values.IN_SQUAT].get()]
+
+    if any([is_adv_digit(str(x)) and int(x) < 0 for x in Values_connector]):
+        messagebox.showerror("ВЫ ВВЕЛИ КРИНЖ")
+    # print( Entries[Values.IN_WEIGHT].get(), Entries[Values.IN_HEIGHT].get(), Entries[Values.IN_SEX].get(), Entries[Values.IN_LEG_GIRTH].get(), \
+    #     Entries[Values.IN_BODY_SIZE].get(), Entries[Values.IN_SQUAT].get()  )
+    
     
 def toggle_fullscreen(event = None):
     global fullscreen_state
