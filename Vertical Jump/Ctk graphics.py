@@ -6,6 +6,7 @@ from plots import *
 import customtkinter
 import matplotlib
 
+is_adv_digit = lambda x: x.isdigit() if x[:1] != '-' else x[1:].isdigit()
 
 class Values(IntEnum):
     IN_WEIGHT = 0
@@ -27,6 +28,7 @@ class App(customtkinter.CTk):
                 "Введите длину туловища в сантиметрах", "Введите пол", "Введите высоту приседа в сантиметрах"]
     LABELS = []
     ENTRIES = []
+
 
     def __init__(self):
         super().__init__()
@@ -55,13 +57,14 @@ class App(customtkinter.CTk):
         # ============ frame_left ============ #
 
         self.frame_left.grid_rowconfigure(13, minsize=50)
-
+        self.entries = []
         ## Input weight
         self.label_weight = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_WEIGHT],
                                                    text_font=("Roboto Medium", -16))
         self.label_weight.grid(row=0, column=0, pady=10, padx=10)
         self.entry_weight = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="72 кг")
         self.entry_weight.grid(row=1, column=0, columnspan=2, pady=0, padx=10)
+        self.entries.append(self.entry_weight)
 
         ## Input height
         self.label_height = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_HEIGHT],
@@ -69,6 +72,7 @@ class App(customtkinter.CTk):
         self.label_height.grid(row=2, column=0, pady=10, padx=10)
         self.entry_height = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="178 см")
         self.entry_height.grid(row=3, column=0, columnspan=2, pady=0, padx=10)
+        self.entries.append(self.entry_height)
 
         ## INput leg girth
         self.label_leg_girth = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_LEG_GIRTH],
@@ -76,6 +80,7 @@ class App(customtkinter.CTk):
         self.label_leg_girth.grid(row=4, column=0, pady=10, padx=10)
         self.entry_leg_girth = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="38 см")
         self.entry_leg_girth.grid(row=5, column=0, columnspan=2, pady=0, padx=10)
+        self.entries.append(self.entry_leg_girth)
 
         ## Input body size
         self.label_body_size = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_BODY_SIZE],
@@ -84,36 +89,38 @@ class App(customtkinter.CTk):
 
         self.entry_body_size = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="52 см")
         self.entry_body_size.grid(row=7, column=0, columnspan=2, pady=0, padx=10)
+        self.entries.append(self.entry_body_size)
 
         ## Input sex
-        self.radio_var = tkinter.StringVar(value="F")
+        self.sex_var = tkinter.StringVar(value="F")
         self.label_sex = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_SEX],
                                                 text_font=("Roboto Medium", -16))
         self.label_sex.grid(row=8, column=0, pady=10, padx=20, sticky="nswe")
 
         self.radio_button_m = customtkinter.CTkRadioButton(master=self.frame_left, text="Мужской",
-                                                           variable=self.radio_var,
+                                                           variable=self.sex_var,
                                                            value="M")
         self.radio_button_m.grid(row=9, column=0, pady=0, padx=20)
         self.radio_button_f = customtkinter.CTkRadioButton(master=self.frame_left, text="Женский",
-                                                           variable=self.radio_var,
+                                                           variable=self.sex_var,
                                                            value="F")
         self.radio_button_f.grid(row=10, column=0, pady=10, padx=20)
 
         ## Input Squat
+        self.squat_var = tkinter.IntVar()
+        self.sex_var.set(0)
         self.label_squat = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_SQUAT],
                                                 text_font=("Roboto Medium", -16))
         self.label_squat.grid(row=11, column=0, pady=10, padx=10, sticky="nswe")
-        self.rofl = tkinter.Scale(master=self.frame_left, from_=0, to=60, orient="horizontal", background="#e3e3e3", borderwidth=3, width=20, length=200)
-        self.entry_squat = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="40 см")
+        self.slider_squat = tkinter.Scale(master=self.frame_left, variable=self.squat_var, from_=0, to=60, orient="horizontal", background="#e3e3e3", borderwidth=3, width=20, length=200)
         # self.slider_squat = tkinter.TkSlider(master=self.frame_left, from_=0, to=60)
-        self.rofl.grid(row=12, column=0, columnspan=2, padx=10)
+        self.slider_squat.grid(row=12, column=0, columnspan=2, padx=10)
 
         ## Confirm Button
 
         self.confirm_button = customtkinter.CTkButton(master=self.frame_left, height=40, text="Ввести данные",
                                                       border_width=3,
-                                                      fg_color=None, command=self.button_event)
+                                                      fg_color=None, command=self.confirm_event)
         self.confirm_button.grid(row=14, column=0, padx=10)
 
         # ============ frame_right ============
@@ -231,11 +238,22 @@ class App(customtkinter.CTk):
     def button_event(self):
         print("Button pressed")
 
-    # def change_mode(self):
-    #     if self.switch_2.get() == 1:
-    #         customtkinter.set_appearance_mode("dark")
-    #     else:
-    #         customtkinter.set_appearance_mode("light")
+    def confirm_event(self):
+        parameters_pack = [self.entry_weight.get(), self.entry_height.get(),
+              self.sex_var.get(), self.entry_leg_girth.get(), self.entry_body_size.get(), self.squat_var.get()]
+        if any([len(str(x)) == 0 or is_adv_digit(str(x)) and int(x) < 0 for x in parameters_pack]):
+            messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
+
+        else:
+            parameters_pack = [int(str(x), 10) for x in parameters_pack if str(x) not in "MF"]
+            self.entry_weight.configure(state=tkinter.DISABLED)
+            self.entry_height.configure(state=tkinter.DISABLED)
+            self.entry_body_size.configure(state=tkinter.DISABLED)
+            self.entry_leg_girth.configure(state=tkinter.DISABLED)
+            self.slider_squat.configure(state=tkinter.DISABLED)
+            self.radio_button_m.configure(state=tkinter.DISABLED)
+            self.radio_button_f.configure(state=tkinter.DISABLED)
+            self.confirm_button.configure(state=tkinter.DISABLED)
 
     def on_closing(self, event=0):
         self.destroy()
