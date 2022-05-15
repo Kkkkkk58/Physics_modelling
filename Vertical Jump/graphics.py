@@ -2,6 +2,7 @@ from enum import IntEnum
 from tkinter import messagebox
 from tkinter.tix import Tk
 from tkinter import *
+from plots import *
 
 class Values(IntEnum):
     IN_WEIGHT = 0
@@ -32,6 +33,7 @@ def confirm():
 
     if any([is_adv_digit(str(x)) and int(x) < 0 for x in Values_connector]):
         messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
+    plot()
     # print( Entries[Values.IN_WEIGHT].get(), Entries[Values.IN_HEIGHT].get(), Entries[Values.IN_SEX].get(), Entries[Values.IN_LEG_GIRTH].get(), \
     #     Entries[Values.IN_BODY_SIZE].get(), Entries[Values.IN_SQUAT].get()  )
     
