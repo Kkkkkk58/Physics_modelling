@@ -1,11 +1,12 @@
 from Constants import GRAVITATIONAL_ACCELERATION
-import Human
+from Human import *
 
 
 class VerticalJumpEvaluation:
     def __init__(self, human, takeoff_velocity):
         self.human = human
         self.human.evaluate_mcp()
+
         self.takeoff_velocity = takeoff_velocity
 
     # t_0 = 2 * d / V_0
@@ -14,7 +15,7 @@ class VerticalJumpEvaluation:
     
     # Y = Y_0 + V_0 * t - 1/2 * g * t^2
     def coordinate(self, time):
-        return self.mcp + self.takeoff_velocity * time - (GRAVITATIONAL_ACCELERATION * time**2) / 2.0
+        return self.human.mcp + self.takeoff_velocity * time - (GRAVITATIONAL_ACCELERATION * time**2) / 2.0
 
     # S = s_0 + V_0 * t + 1/2 * g * t^2
     def distance(self, time):
@@ -43,7 +44,7 @@ class VerticalJumpEvaluation:
     
     # E_к = m * V^2 / 2
     def kinetic_energy(self, time):
-        return self.human.mass * self.velocity(time) ^ 2 / 2.0
+        return self.human.mass * self.velocity(time)**2 / 2.0
     
     # E_п = m * g * h
     def potential_energy(self, time):
