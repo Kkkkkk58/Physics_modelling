@@ -8,13 +8,8 @@ import matplotlib
 
 is_adv_digit = lambda x: x.isdigit() if x[:1] != '-' else x[1:].isdigit()
 
-class Values(IntEnum):
-    IN_WEIGHT = 0
-    IN_HEIGHT = 1
-    IN_LEG_GIRTH = 2
-    IN_BODY_SIZE = 3
-    IN_SEX = 4
-    IN_SQUAT = 5
+
+
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -240,10 +235,12 @@ class App(customtkinter.CTk):
 
     def confirm_event(self):
         parameters_pack = [self.entry_weight.get(), self.entry_height.get(),
-              self.sex_var.get(), self.entry_leg_girth.get(), self.entry_body_size.get(), self.squat_var.get()]
-        if any([len(str(x)) == 0 or is_adv_digit(str(x)) and int(x) < 0 for x in parameters_pack]):
-            messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
-
+            self.entry_leg_girth.get(), self.entry_body_size.get(), self.sex_var.get(), self.squat_var.get()]
+        #DEBUG_DELETED
+        #if any([len(str(x)) == 0 or is_adv_digit(str(x)) and int(x) < 0 for x in parameters_pack]):
+            #messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
+        if (True):
+            parameters_pack = [72, 178, 38, 52, "M", 50]
         else:
             parameters_pack = [int(str(x), 10) for x in parameters_pack if str(x) not in "MF"]
             self.entry_weight.configure(state=tkinter.DISABLED)
@@ -254,6 +251,7 @@ class App(customtkinter.CTk):
             self.radio_button_m.configure(state=tkinter.DISABLED)
             self.radio_button_f.configure(state=tkinter.DISABLED)
             self.confirm_button.configure(state=tkinter.DISABLED)
+        plot(parameters_pack)
 
     def on_closing(self, event=0):
         self.destroy()
@@ -261,7 +259,3 @@ class App(customtkinter.CTk):
     def start(self):
         self.mainloop()
 
-
-if __name__ == "__main__":
-    app = App()
-    app.start()

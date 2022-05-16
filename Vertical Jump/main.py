@@ -1,5 +1,5 @@
-from graphics import set_gui
+from Ctk_graphics import App
 
 if __name__ == "__main__":
-    set_gui()
-
+    app = App()
+    app.start()

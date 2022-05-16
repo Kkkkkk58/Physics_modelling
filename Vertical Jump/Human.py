@@ -9,13 +9,13 @@ class Human:
         self.squat_depth = squat_depth
     
     def evaluate_mcp(self):
-        if self.human.mcp == -1:
+        if self.mcp == -1:
 
-            if self.human.sex == "M":
-                self.human.mcp = 11.066 + 0.675 * self.human.height - \
-                    0.173 * self.human.leg_girth - 0.299 * self.human.body_size
+            if self.sex == "M":
+                self.mcp = 11.066 + 0.675 * self.height - \
+                    0.173 * self.leg_girth - 0.299 * self.body_size
             else:
                 self.mcp = -4.667 + 0.289 * self.height + \
-                    0.383 * self.human.leg_girth + 0.301 * self.human.body_size
-
+                    0.383 * self.leg_girth + 0.301 * self.body_size
+        print(self.mcp)
         return self.mcp
