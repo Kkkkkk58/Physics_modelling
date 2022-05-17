@@ -27,11 +27,14 @@ from Ctk_graphics import *
 #     line[0].set_data(x[0:len(y1data)], y1data)
 #     line[1].set_data(x[0:len(y2data)], y2data)
 #     return line
-
+def on_closing(event=0):
+    Window.destroy()
 
 Window = tkinter.Tk()
 Window.title("Vertical Jump Model by K. Khasan & A. Gogolev")
 Window.geometry(f"720x1080")
+Window.protocol("WM_DELETE_WINDOW", on_closing)  # call .on_closing() when app gets closed
+
 
 # create a figure with four subplots
 GRAPH_COUNT = 4
