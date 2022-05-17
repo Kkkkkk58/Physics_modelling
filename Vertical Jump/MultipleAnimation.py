@@ -1,39 +1,13 @@
 from Ctk_graphics import *
 
-#
-# def plot_v(frame, line, evaluation, x):
-#     return [line]
-#
-#
-# def plot_c(frame, line, evaluation, x):
-#     line.set_ydata(evaluation.coordinate(x+frame))
-#     return [line]
-#
-# def data_gen():
-#     t = np.arange(0, terminal_time, 0.1)
-#     for elem in t:
-#         yield elem, evaluation.coordinate(elem), evaluation.velocity(elem)
-#
-#
-# def fucking_crazy_plot(data):
-#     t, y1, y2 = data
-#     y1data.append(y1)
-#     y2data.append(y2)
-#     for ax in [ax1, ax2]:
-#         xmin, xmax = ax.get_xlim()
-#         if t >= xmax:
-#             ax.set_xlim(xmin, 2 * xmax)
-#             ax.figure.canvas.draw()
-#     line[0].set_data(x[0:len(y1data)], y1data)
-#     line[1].set_data(x[0:len(y2data)], y2data)
-#     return line
+
 def on_closing(event=0):
     Window.destroy()
+
 
 Window = tkinter.Tk()
 Window.title("Vertical Jump Model by K. Khasan & A. Gogolev")
 Window.geometry(f"720x1080")
-Window.protocol("WM_DELETE_WINDOW", on_closing)  # call .on_closing() when app gets closed
 
 
 # create a figure with four subplots
@@ -49,10 +23,10 @@ human = Human(72, 180, "M", 40, 52, 35)
 evaluation = VerticalJumpEvaluation(human, 8)
 terminal_time = evaluation.flight_time()
 AXES_INFO = [
-             [ {'xlabel': 'Time(s)', 'ylabel': 'Coordinate (cm)', 'ylim': (0, 150), 'xlim' : (0, terminal_time), 'color': 'r'},
+             [ {'xlabel': 'Time(s)', 'ylabel': 'Coordinate (m)', 'ylim': (0, 10), 'xlim' : (0, terminal_time), 'color': 'r'},
                {'xlabel': 'Time(s)', 'ylabel': 'Velocity (m/s)', 'ylim': (-10, 10), 'xlim' : (0, terminal_time), 'color': 'g'}],
-             [ {'xlabel': 'Time(s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 1000000), 'xlim' : (0, terminal_time), 'color': 'b'},
-               {'xlabel': 'Time(s)', 'ylabel': 'Distance (cm)', 'ylim': (0, 50), 'xlim' : (0, terminal_time), 'color': 'c'}]
+             [ {'xlabel': 'Time(s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 5000), 'xlim' : (0, terminal_time), 'color': 'b'},
+               {'xlabel': 'Time(s)', 'ylabel': 'Distance (m)', 'ylim': (0, 30), 'xlim' : (0, terminal_time), 'color': 'c'}]
             ]
 
 
@@ -64,6 +38,11 @@ for i in range(0, 2):
         axs[i][j].set_ylim(AXES_INFO[i][j]['ylim'])
         # axs[i][j].set_xlim(AXES_INFO[i][j]['xlim'])
         axs[i][j].set_xlim(0, terminal_time)
+        axs[i][j].minorticks_on()
+        # включаем основную сетку
+        axs[i][j].grid(which='major')
+        # включаем дополнительную сетку
+        axs[i][j].grid(which='minor', linestyle=':')
 
 plt.subplots_adjust(hspace=0.9, wspace=0.8, top=0.9)
 
@@ -73,6 +52,7 @@ line2, = axs[0][1].plot([], [], lw=2, color=AXES_INFO[0][1]['color'])
 line3, = axs[1][0].plot([], [], lw=2, color=AXES_INFO[1][0]['color'])
 line4, = axs[1][1].plot([], [], lw=2, color=AXES_INFO[1][1]['color'])
 line = [line1, line2, line3, line4]
+
 
 # coroutine to push data to matplotlib
 def data_gen():
@@ -97,6 +77,7 @@ ydata1 = []
 ydata2 = []
 ydata3 = []
 ydata4 = []
+
 
 def run(data):
     # update the data
@@ -126,3 +107,5 @@ canvas.draw()
 
 if __name__ == '__main__':
     Window.mainloop()
+    Window.protocol("WM_DELETE_WINDOW", on_closing)  # call .on_closing() when app gets closed
+
