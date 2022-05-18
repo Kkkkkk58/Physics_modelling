@@ -34,7 +34,6 @@ class PlotAnimation:
                 self.axs[i][j].set_xlabel(self.axes_info[i][j]['xlabel'])
                 self.axs[i][j].set_ylabel(self.axes_info[i][j]['ylabel'])
                 self.axs[i][j].set_ylim(self.axes_info[i][j]['ylim'])
-                # axs[i][j].set_xlim(AXES_INFO[i][j]['xlim'])
                 self.axs[i][j].set_xlim(0, self.terminal_time)
                 self.axs[i][j].minorticks_on()
                 # включаем основную сетку

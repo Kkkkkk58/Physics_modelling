@@ -28,22 +28,3 @@ class Plotter:
 
     def reset(self):
         self.plot_animation.clear()
-
-    fig, ax = plt.subplots()
-    print(evaluation.takeoff_time(), evaluation.max_height())
-    #  Создаем функцию, генерирующую картинки
-    #  для последующей "склейки":
-    def animate(i):
-        ax.clear()
-        line = ax.plot(t, evaluation.coordinate(t))
-        return line
-
-    #  Создаем объект анимации:
-    sin_animation = animation.FuncAnimation(fig, 
-                                        animate, 
-                                        frames=np.linspace(2, 4, 30),
-                                        interval = 10,
-                                        repeat = True)
-    plt.show()
-    #evaluate = VerticalJumpEvaluation(human, )
-    #time = np.array([_ for _ in range(0, )])

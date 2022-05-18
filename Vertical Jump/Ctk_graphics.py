@@ -1,14 +1,8 @@
 import tkinter
-from enum import IntEnum
-from tkinter import messagebox
-from tkinter.tix import Tk
 from plots import *
 import customtkinter
 
 is_adv_digit = lambda x: x.isdigit() if x[:1] != '-' else x[1:].isdigit()
-
-
-
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -22,7 +16,6 @@ class App(customtkinter.CTk):
                 "Введите длину туловища в сантиметрах", "Введите пол", "Введите высоту приседа в сантиметрах"]
     LABELS = []
     ENTRIES = []
-
 
     def __init__(self):
         super().__init__()
@@ -71,7 +64,7 @@ class App(customtkinter.CTk):
 
         # Input leg girth
         self.label_leg_girth = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_LEG_GIRTH],
-                                                   text_font=("Roboto Medium", -16))
+                                                      text_font=("Roboto Medium", -16))
         self.label_leg_girth.grid(row=4, column=0, pady=10, padx=10)
         self.entry_leg_girth = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="38 см")
         self.entry_leg_girth.grid(row=5, column=0, columnspan=2, pady=0, padx=10)
@@ -108,9 +101,11 @@ class App(customtkinter.CTk):
         # Input Squat
         self.squat_var = tkinter.IntVar(value=0)
         self.label_squat = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_SQUAT],
-                                                text_font=("Roboto Medium", -16))
+                                                  text_font=("Roboto Medium", -16))
         self.label_squat.grid(row=11, column=0, pady=10, padx=10, sticky="nswe")
-        self.slider_squat = tkinter.Scale(master=self.frame_left, variable=self.squat_var, from_=0, to=60, orient="horizontal", background="#e3e3e3", borderwidth=3, width=20, length=200)
+        self.slider_squat = tkinter.Scale(master=self.frame_left, variable=self.squat_var, from_=0, to=60,
+                                          orient="horizontal", background="#e3e3e3",
+                                          borderwidth=3, width=20, length=200)
         # self.slider_squat = tkinter.TkSlider(master=self.frame_left, from_=0, to=60)
         self.slider_squat.grid(row=12, column=0, columnspan=2, padx=10)
         self.left_frame_elements.append(self.slider_squat)
@@ -210,11 +205,12 @@ class App(customtkinter.CTk):
 
     def confirm_event(self):
         parameters_pack = [self.entry_weight.get(), self.entry_height.get(),
-            self.entry_leg_girth.get(), self.entry_body_size.get(), self.sex_var.get(), self.squat_var.get()]
+                           self.entry_leg_girth.get(), self.entry_body_size.get(),
+                           self.sex_var.get(), self.squat_var.get()]
         #DEBUG_DELETED
         #if any([len(str(x)) == 0 or is_adv_digit(str(x)) and int(x) < 0 for x in parameters_pack]):
-            #messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
-        if (True):
+        #    messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
+        if True:
             self.parameters_pack = [72, 178, 38, 52, "M", 50]
             for elem in self.left_frame_elements:
                 elem.configure(state=tkinter.DISABLED)
@@ -236,12 +232,11 @@ class App(customtkinter.CTk):
             elem.configure(state=tkinter.NORMAL)
         for elem in self.right_frame_elements:
             elem.configure(state=tkinter.DISABLED)
-        self.plotter.reset()
+        if self.plotter is not None:
+            self.plotter.reset()
 
     def on_closing(self):
         self.quit()
-        # self.destroy()
 
     def start(self):
         self.mainloop()
-
