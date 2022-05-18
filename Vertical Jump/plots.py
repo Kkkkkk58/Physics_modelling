@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image, ImageTk
 from VerticalJumpEvaluation import VerticalJumpEvaluation
 from Human import *
-
+import MultipleAnimation
 
 class Values(IntEnum):
     IN_WEIGHT = 0
@@ -16,13 +16,17 @@ class Values(IntEnum):
     IN_SQUAT = 5
 
 
+class Plotter:
+    def __init__(self, frame, data):
+        self.human = Human(data[Values.IN_WEIGHT], data[Values.IN_HEIGHT], data[Values.IN_SEX], data[Values.IN_LEG_GIRTH],
+                      data[Values.IN_LEG_GIRTH], data[Values.IN_SQUAT])
+        self.plot_animation = MultipleAnimation.PlotAnimation(frame, self.human)
 
-def plot(data):
-    human = Human(data[Values.IN_WEIGHT], data[Values.IN_HEIGHT], data[Values.IN_SEX], data[Values.IN_LEG_GIRTH],
-                  data[Values.IN_LEG_GIRTH], data[Values.IN_SQUAT])
-    evaluation = VerticalJumpEvaluation(human, 12) 
-    terminal_time = evaluation.flight_time()
-    t = np.linspace(0, terminal_time, 300)
+    def plot(self):
+        self.plot_animation.display()
+
+    def reset(self):
+        self.plot_animation.clear()
 
     fig, ax = plt.subplots()
     print(evaluation.takeoff_time(), evaluation.max_height())
