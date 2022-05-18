@@ -7,6 +7,7 @@ from VerticalJumpEvaluation import VerticalJumpEvaluation
 from Human import *
 import MultipleAnimation
 
+
 class Values(IntEnum):
     IN_WEIGHT = 0
     IN_HEIGHT = 1
@@ -18,8 +19,8 @@ class Values(IntEnum):
 
 class Plotter:
     def __init__(self, frame, data):
-        self.human = Human(data[Values.IN_WEIGHT], data[Values.IN_HEIGHT], data[Values.IN_SEX], data[Values.IN_LEG_GIRTH],
-                      data[Values.IN_LEG_GIRTH], data[Values.IN_SQUAT])
+        self.human = Human(data[Values.IN_WEIGHT], data[Values.IN_HEIGHT], data[Values.IN_SEX],
+                           data[Values.IN_LEG_GIRTH], data[Values.IN_LEG_GIRTH], data[Values.IN_SQUAT])
         self.plot_animation = MultipleAnimation.PlotAnimation(frame, self.human)
 
     def plot(self):

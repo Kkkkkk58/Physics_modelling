@@ -1,15 +1,9 @@
-import tkinter
-import matplotlib.animation
 from plots import *
-import customtkinter
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
-from matplotlib.animation import FuncAnimation
 
 
 class PlotAnimation:
     GRAPH_COUNT = 4
-    # data_gen.t = 0
 
     def __init__(self, frame, human):
 
@@ -18,7 +12,7 @@ class PlotAnimation:
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
         self.canvas.get_tk_widget().grid(row=0, column=0, columnspan=2, pady=0, padx=0, ipadx=0, sticky="nswe")
 
-        # evaluate human object (parameteres should be pulled from gui)
+        # evaluate human object (parameters should be pulled from gui)
         self.human = human
         self.evaluation = VerticalJumpEvaluation(self.human, 8)
         self.terminal_time = self.evaluation.flight_time()
@@ -30,7 +24,8 @@ class PlotAnimation:
               'color': 'g'}],
             [{'xlabel': 'Time(s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 5000), 'xlim': (0, self.terminal_time),
               'color': 'b'},
-             {'xlabel': 'Time(s)', 'ylabel': 'Distance (m)', 'ylim': (0, 30), 'xlim': (0, self.terminal_time), 'color': 'c'}]
+             {'xlabel': 'Time(s)', 'ylabel': 'Distance (m)', 'ylim': (0, 30), 'xlim': (0, self.terminal_time),
+              'color': 'c'}]
         ]
 
         # Initializing all the axes
@@ -71,8 +66,6 @@ class PlotAnimation:
     # coroutine to push data to matplotlib
     def data_gen(self):
         t = 0
-        cnt = 0
-        # y = [0] * GRAPH_COUNT
         # All the evaluations goes here
         while t < self.terminal_time:
             t += 0.01
@@ -105,3 +98,4 @@ class PlotAnimation:
     def clear(self):
         for item in self.canvas.get_tk_widget().find_all():
             self.canvas.get_tk_widget().delete(item)
+        self.canvas.flush_events()

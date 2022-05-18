@@ -4,10 +4,7 @@ from tkinter import messagebox
 from tkinter.tix import Tk
 from plots import *
 import customtkinter
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
-from matplotlib.animation import FuncAnimation
-import MultipleAnimation
+
 is_adv_digit = lambda x: x.isdigit() if x[:1] != '-' else x[1:].isdigit()
 
 
@@ -54,7 +51,7 @@ class App(customtkinter.CTk):
         self.frame_left.grid_rowconfigure(13, minsize=75)
         self.entries = []
         self.left_frame_elements = []
-        ## Input weight
+        # Input weight
         self.label_weight = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_WEIGHT],
                                                    text_font=("Roboto Medium", -16))
         self.label_weight.grid(row=0, column=0, pady=10, padx=10)
@@ -63,7 +60,7 @@ class App(customtkinter.CTk):
         self.entries.append(self.entry_weight)
         self.left_frame_elements.append(self.entry_weight)
 
-        ## Input height
+        # Input height
         self.label_height = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_HEIGHT],
                                                    text_font=("Roboto Medium", -16))
         self.label_height.grid(row=2, column=0, pady=10, padx=10)
@@ -72,7 +69,7 @@ class App(customtkinter.CTk):
         self.entries.append(self.entry_height)
         self.left_frame_elements.append(self.entry_height)
 
-        ## INput leg girth
+        # Input leg girth
         self.label_leg_girth = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_LEG_GIRTH],
                                                    text_font=("Roboto Medium", -16))
         self.label_leg_girth.grid(row=4, column=0, pady=10, padx=10)
@@ -81,7 +78,7 @@ class App(customtkinter.CTk):
         self.entries.append(self.entry_leg_girth)
         self.left_frame_elements.append(self.entry_leg_girth)
 
-        ## Input body size
+        # Input body size
         self.label_body_size = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_BODY_SIZE],
                                                       text_font=("Roboto Medium", -16))
         self.label_body_size.grid(row=6, column=0, pady=10, padx=10)
@@ -91,7 +88,7 @@ class App(customtkinter.CTk):
         self.entries.append(self.entry_body_size)
         self.left_frame_elements.append(self.entry_body_size)
 
-        ## Input sex
+        # Input sex
         self.sex_var = tkinter.StringVar(value="F")
         self.label_sex = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_SEX],
                                                 text_font=("Roboto Medium", -16))
@@ -108,7 +105,7 @@ class App(customtkinter.CTk):
         self.left_frame_elements.append(self.radio_button_f)
         self.left_frame_elements.append(self.radio_button_m)
 
-        ## Input Squat
+        # Input Squat
         self.squat_var = tkinter.IntVar(value=0)
         self.label_squat = customtkinter.CTkLabel(master=self.frame_left, text=App.REQUESTS[Values.IN_SQUAT],
                                                 text_font=("Roboto Medium", -16))
@@ -118,7 +115,7 @@ class App(customtkinter.CTk):
         self.slider_squat.grid(row=12, column=0, columnspan=2, padx=10)
         self.left_frame_elements.append(self.slider_squat)
 
-        ## Confirm Button
+        # Confirm Button
 
         self.confirm_button = customtkinter.CTkButton(master=self.frame_left, height=40, text="Ввести данные",
                                                       border_width=3,
@@ -176,17 +173,17 @@ class App(customtkinter.CTk):
         # self.slider_button_1.grid(row=4, column=2, columnspan=1, pady=10, padx=20, sticky="we")
 
         self.start_button = customtkinter.CTkButton(master=self.frame_right,
-                                                       height=40,
-                                                       text="Пуск",
-                                                       command=self.start_plotting)
+                                                    height=40,
+                                                    text="Пуск",
+                                                    command=self.start_plotting)
         self.start_button.grid(row=6, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
         self.right_frame_elements.append(self.start_button)
         self.reset_button = customtkinter.CTkButton(master=self.frame_right,
-                                                         height=40,
-                                                         text="Сброс",
-                                                         border_width=3,  # <- custom border_width
-                                                         fg_color=None,  # <- no fg_color
-                                                         command=self.reset)
+                                                    height=40,
+                                                    text="Сброс",
+                                                    border_width=3,  # <- custom border_width
+                                                    fg_color=None,  # <- no fg_color
+                                                    command=self.reset)
         self.reset_button.grid(row=7, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
         self.right_frame_elements.append(self.reset_button)
 
@@ -202,17 +199,14 @@ class App(customtkinter.CTk):
         # self.velocity_confirm_button.grid(row=8, column=2, columnspan=1, pady=20, padx=20, sticky="we")
         # self.right_frame_elements.append(self.velocity_confirm_button)
 
-
         # set default values
         for elem in self.right_frame_elements:
             elem.configure(state=tkinter.DISABLED)
         self.parameters_pack = []
         self.plotter = None
 
-
-
-    def button_event(self):
-        print("Button pressed")
+    # def button_event(self):
+    #     print("Button pressed")
 
     def confirm_event(self):
         parameters_pack = [self.entry_weight.get(), self.entry_height.get(),
@@ -244,8 +238,9 @@ class App(customtkinter.CTk):
             elem.configure(state=tkinter.DISABLED)
         self.plotter.reset()
 
-    def on_closing(self, event=0):
-        self.destroy()
+    def on_closing(self):
+        self.quit()
+        # self.destroy()
 
     def start(self):
         self.mainloop()
