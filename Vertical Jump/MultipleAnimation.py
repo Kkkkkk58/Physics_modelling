@@ -14,11 +14,11 @@ class PlotAnimation:
 
         # evaluate human object (parameters should be pulled from gui)
         self.human = human
-        self.evaluation = VerticalJumpEvaluation(self.human, 8)
+        self.evaluation = VerticalJumpEvaluation(self.human, 3)
         self.terminal_time = self.evaluation.flight_time()
 
         self.axes_info = [
-            [{'xlabel': 'Time(s)', 'ylabel': 'Coordinate (m)', 'ylim': (0, 10), 'xlim': (0, self.terminal_time),
+            [{'xlabel': 'Time(s)', 'ylabel': 'Coordinate (m)', 'ylim': (0, 3), 'xlim': (0, self.terminal_time),
               'color': 'r'},
              {'xlabel': 'Time(s)', 'ylabel': 'Velocity (m/s)', 'ylim': (-10, 10), 'xlim': (0, self.terminal_time),
               'color': 'g'}],
