@@ -242,9 +242,12 @@ class App(customtkinter.CTk):
             elem.configure(state=tkinter.NORMAL)
         for elem in self.right_frame_elements:
             elem.configure(state=tkinter.DISABLED)
-        self.plotter.reset()
+        if self.plotter is not None:
+            self.plotter.reset()
 
     def on_closing(self, event=0):
+        if self.plotter is not None:
+            self.reset()
         self.destroy()
 
     def start(self):
