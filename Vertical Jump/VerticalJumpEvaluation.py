@@ -23,7 +23,7 @@ class VerticalJumpEvaluation:
     # S = s_0 + V_0 * t + 1/2 * g * t^2
     def distance(self, time):
         return self.human.squat_depth + self.takeoff_velocity * time + (GRAVITATIONAL_ACCELERATION * time**2) / 2.0\
-            if time >= 0 else 0
+            if time >= 0 else self.coordinate(time) - (self.human.mcp - self.human.squat_depth)
    
     # V = V_0 - g * t
     def velocity(self, time):

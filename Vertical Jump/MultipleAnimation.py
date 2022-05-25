@@ -26,7 +26,7 @@ class PlotAnimation:
               'color': 'g'}],
             [{'xlabel': 'Time(s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 5000), 'xlim': (0, self.terminal_time),
               'color': 'b'},
-             {'xlabel': 'Time(s)', 'ylabel': 'Distance (m)', 'ylim': (0, 30), 'xlim': (0, self.terminal_time),
+             {'xlabel': 'Time(s)', 'ylabel': 'Distance (m)', 'ylim': (0, 5), 'xlim': (0, self.terminal_time),
               'color': 'c'}]
         ]
 
