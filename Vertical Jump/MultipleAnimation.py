@@ -20,7 +20,7 @@ class PlotAnimation:
         self.terminal_time = self.flight_time + self.takeoff_time
 
         self.axes_info = [
-            [{'xlabel': 'Time(s)', 'ylabel': 'Coordinate (m)', 'ylim': (0, 3), 'xlim': (0, self.terminal_time),
+            [{'xlabel': 'Time(s)', 'ylabel': 'Coordinate (m)', 'ylim': (0, 2), 'xlim': (0, self.terminal_time),
               'color': 'r'},
              {'xlabel': 'Time(s)', 'ylabel': 'Velocity (m/s)', 'ylim': (-10, 10), 'xlim': (0, self.terminal_time),
               'color': 'g'}],
