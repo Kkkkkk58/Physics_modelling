@@ -15,7 +15,9 @@ class PlotAnimation:
         # evaluate human object (parameters should be pulled from gui)
         self.human = human
         self.evaluation = VerticalJumpEvaluation(self.human, 3)
-        self.terminal_time = self.evaluation.flight_time()
+        self.flight_time = self.evaluation.flight_time()
+        self.takeoff_time = self.evaluation.takeoff_time()
+        self.terminal_time = self.flight_time + self.takeoff_time
 
         self.axes_info = [
             [{'xlabel': 'Time(s)', 'ylabel': 'Coordinate (m)', 'ylim': (0, 3), 'xlim': (0, self.terminal_time),
@@ -68,10 +70,10 @@ class PlotAnimation:
         # All the evaluations goes here
         while t < self.terminal_time:
             t += 0.01
-            y1 = self.evaluation.coordinate(t)
-            y2 = self.evaluation.velocity(t)
-            y3 = self.evaluation.full_energy(t)
-            y4 = self.evaluation.distance(t)
+            y1 = self.evaluation.coordinate(t - self.takeoff_time)
+            y2 = self.evaluation.velocity(t - self.takeoff_time)
+            y3 = self.evaluation.full_energy(t - self.takeoff_time)
+            y4 = self.evaluation.distance(t - self.takeoff_time)
             # adapted the data generator to yield both sin and cos
             yield t, y1, y2, y3, y4
 
