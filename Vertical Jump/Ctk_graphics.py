@@ -107,7 +107,6 @@ class App(customtkinter.CTk):
         self.slider_squat = tkinter.Scale(master=self.frame_left, variable=self.squat_var, from_=0, to=60,
                                           orient="horizontal", background="#e3e3e3",
                                           borderwidth=3, width=20, length=200)
-        # self.slider_squat = tkinter.TkSlider(master=self.frame_left, from_=0, to=60)
         self.slider_squat.grid(row=12, column=0, columnspan=2, padx=10)
         self.left_frame_elements.append(self.slider_squat)
 
@@ -151,13 +150,7 @@ class App(customtkinter.CTk):
                                                      placeholder_text="Введите скорость прыжка в метрах в секунду")
         self.velocity_entry.grid(row=8, column=0, columnspan=2, pady=20, padx=20, sticky="we")
         self.right_frame_elements.append(self.velocity_entry)
-        #
-        # self.velocity_confirm_button = customtkinter.CTkButton(master=self.frame_right,
-        #                                                        text="Подтвердить")
-        # self.velocity_confirm_button.grid(row=8, column=2, columnspan=1, pady=20, padx=20, sticky="we")
-        # self.right_frame_elements.append(self.velocity_confirm_button)
 
-        # set default values
         for elem in self.right_frame_elements:
             elem.configure(state=tkinter.DISABLED)
         self.parameters_pack = []
@@ -167,7 +160,6 @@ class App(customtkinter.CTk):
         parameters_pack = [self.entry_weight.get(), self.entry_height.get(),
                            self.entry_leg_girth.get(), self.entry_body_size.get(),
                            self.sex_var.get(), self.squat_var.get()]
-        #DEBUG_DELETED
         if any([len(str(x)) == 0 or is_adv_digit(str(x)) and int(x) < 0 for x in parameters_pack]):
            messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
 

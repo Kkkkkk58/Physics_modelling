@@ -1,5 +1,5 @@
 from plots import *
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class PlotAnimation:
@@ -45,9 +45,9 @@ class PlotAnimation:
                 self.axs[i][j].set_ylim(self.axes_info[i][j]['ylim'])
                 self.axs[i][j].set_xlim(0, self.terminal_time)
                 self.axs[i][j].minorticks_on()
-                # включаем основную сетку
+                # enable the major grid
                 self.axs[i][j].grid(which='major')
-                # включаем дополнительную сетку
+                # enable the minor grid
                 self.axs[i][j].grid(which='minor', linestyle=':')
 
     def get_lines(self):

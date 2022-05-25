@@ -27,7 +27,7 @@ class VerticalJumpEvaluation:
         return self.human.squat_depth + self.takeoff_velocity * time + (GRAVITATIONAL_ACCELERATION * time**2) / 2.0\
             if time >= 0 else self.coordinate(time) - (self.human.mcp - self.human.squat_depth)
    
-    
+    # sin(a) = (hip - (mcp - y)) / hip
     def angle_sin(self, time):
        return 1 if time >= 0 \
            else (self.human.hip_size - (self.human.mcp - self.coordinate(time))) / self.human.hip_size
@@ -41,6 +41,7 @@ class VerticalJumpEvaluation:
     def push_force(self):
         return self.human.mass * GRAVITATIONAL_ACCELERATION * (self.max_height() - self.human.mcp + self.human.squat_depth) / self.human.squat_depth
     
+    # F_y = F * sin(a)
     def push_force_projection(self, time):
         return self.push_force() * self.angle_sin(time)
     
@@ -64,7 +65,7 @@ class VerticalJumpEvaluation:
     def potential_energy(self, time):
         return self.human.mass * GRAVITATIONAL_ACCELERATION * self.coordinate(time)
 
-    # IDK
+    # F_sr = mg + F_y
     def support_reaction_force(self, time):
         return self.human.mass * GRAVITATIONAL_ACCELERATION + self.push_force_projection(time) if time < 0 \
             else 0
@@ -79,9 +80,6 @@ class VerticalJumpEvaluation:
     def support_reaction_power(self, time):
         return self.support_reaction_work(time) * 1.0 / (self.takeoff_time() + time) if time != 0\
             else self.support_reaction_power(time - 0.01)
-
-    # def optimal_jump(self):
-    #     muscle_force = 3 * self.human.mass * GRAVITATIONAL_ACCELERATION
 
 
     
