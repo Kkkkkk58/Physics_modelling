@@ -14,21 +14,39 @@ class PlotAnimation:
 
         # evaluate human object (parameters should be pulled from gui)
         self.human = human
-        self.evaluation = VerticalJumpEvaluation(self.human, 8)
-        self.terminal_time = self.evaluation.flight_time()
+        self.evaluation = VerticalJumpEvaluation(self.human, 3)
+        self.flight_time = self.evaluation.flight_time()
+        self.takeoff_time = self.evaluation.takeoff_time()
+        self.terminal_time = self.flight_time + self.takeoff_time
 
-        self.axes_info = [
-            [{'xlabel': 'Time(s)', 'ylabel': 'Coordinate (m)', 'ylim': (0, 10), 'xlim': (0, self.terminal_time),
+        # set axes info (limits, colors, coord labels)
+        self.axes_info = self.set_axes_info()
+
+        # Initializing all the axes
+        self.initialize_axs()
+        self.xdata = []
+        self.ydata1 = []
+        self.ydata2 = []
+        self.ydata3 = []
+        self.ydata4 = []
+
+        plt.subplots_adjust(hspace=0.9, wspace=0.8, top=0.9)
+        # initializing all the lines
+        self.line = self.get_lines()
+
+    def set_axes_info(self):
+        return [
+            [{'xlabel': 'Time (s)', 'ylabel': 'Coordinate (m)', 'ylim': (0, 2), 'xlim': (0, self.terminal_time),
               'color': 'r'},
-             {'xlabel': 'Time(s)', 'ylabel': 'Velocity (m/s)', 'ylim': (-10, 10), 'xlim': (0, self.terminal_time),
+             {'xlabel': 'Time (s)', 'ylabel': 'Velocity (m/s)', 'ylim': (-5, 5), 'xlim': (0, self.terminal_time),
               'color': 'g'}],
-            [{'xlabel': 'Time(s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 5000), 'xlim': (0, self.terminal_time),
+            [{'xlabel': 'Time (s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 2000), 'xlim': (0, self.terminal_time),
               'color': 'b'},
-             {'xlabel': 'Time(s)', 'ylabel': 'Distance (m)', 'ylim': (0, 30), 'xlim': (0, self.terminal_time),
+             {'xlabel': 'Time (s)', 'ylabel': 'Distance (m)', 'ylim': (0, 5), 'xlim': (0, self.terminal_time),
               'color': 'c'}]
         ]
 
-        # Initializing all the axes
+    def initialize_axs(self):
         for i in range(0, 2):
             for j in range(0, 2):
                 self.axs[i][j].set_xlabel(self.axes_info[i][j]['xlabel'])
@@ -41,20 +59,13 @@ class PlotAnimation:
                 # включаем дополнительную сетку
                 self.axs[i][j].grid(which='minor', linestyle=':')
 
-        plt.subplots_adjust(hspace=0.9, wspace=0.8, top=0.9)
-
-        # initializing all the lines
+    def get_lines(self):
         line1, = self.axs[0][0].plot([], [], lw=2, color=self.axes_info[0][0]['color'])
         line2, = self.axs[0][1].plot([], [], lw=2, color=self.axes_info[0][1]['color'])
         line3, = self.axs[1][0].plot([], [], lw=2, color=self.axes_info[1][0]['color'])
         line4, = self.axs[1][1].plot([], [], lw=2, color=self.axes_info[1][1]['color'])
-        self.line = [line1, line2, line3, line4]
-
-        self.xdata = []
-        self.ydata1 = []
-        self.ydata2 = []
-        self.ydata3 = []
-        self.ydata4 = []
+        line = [line1, line2, line3, line4]
+        return line
 
     # Function to be called when the start button is pressed
     def display(self):
@@ -98,3 +109,36 @@ class PlotAnimation:
         for item in self.canvas.get_tk_widget().find_all():
             self.canvas.get_tk_widget().delete(item)
         self.canvas.flush_events()
+
+
+class PlotFirstPage(PlotAnimation):
+    def __init__(self, frame, human):
+        super(PlotFirstPage, self).__init__(frame, human)
+
+class PlotSecondPage(PlotAnimation):
+    def __init(self, frame, human):
+        super(PlotSecondPage, self).__init__(frame, human)
+
+    def set_axes_info(self):
+        return [
+            [{'xlabel': 'Time (s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 5000), 'xlim': (0, self.terminal_time),
+              'color': 'r'},
+             {'xlabel': 'Time (s)', 'ylabel': 'Kineteic Energy (j)', 'ylim': (0, 5000), 'xlim': (0, self.terminal_time),
+              'color': 'g'}],
+            [{'xlabel': 'Time (s)', 'ylabel': 'Potential Energy (j)', 'ylim': (0, 5000), 'xlim': (0, self.terminal_time),
+              'color': 'b'},
+             {'xlabel': 'Time (s)', 'ylabel': 'Support Reaction Work (j)', 'ylim': (0, 5000), 'xlim': (0, self.terminal_time),
+              'color': 'c'}]
+        ]
+    def data_gen(self):
+        t = 0
+        # All the evaluations goes here
+        while t < self.terminal_time:
+            t += 0.01
+            y1 = self.evaluation.full_energy(t)
+            y2 = self.evaluation.kinetic_energy(t)
+            y3 = self.evaluation.potential_energy(t)
+            y4 = self.evaluation.support_reaction_work(t)
+            # adapted the data generator to yield both sin and cos
+            yield t, y1, y2, y3, y4
+

@@ -1,6 +1,7 @@
 import tkinter
 from plots import *
 import customtkinter
+from tkinter import messagebox
 
 is_adv_digit = lambda x: x.isdigit() if x[:1] != '-' else x[1:].isdigit()
 
@@ -182,17 +183,16 @@ class App(customtkinter.CTk):
         self.reset_button.grid(row=7, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
         self.right_frame_elements.append(self.reset_button)
 
-        # self.velocity_entry = customtkinter.CTkEntry(master=self.frame_right,
-        #                                     width=120,
-        #                                     placeholder_text="Введите скорость прыжка в метрах в секунду")
-        # self.velocity_entry.grid(row=8, column=0, columnspan=2, pady=20, padx=20, sticky="we")
-        # self.right_frame_elements.append(self.velocity_entry)
+        self.velocity_entry = customtkinter.CTkEntry(master=self.frame_right,
+                                            width=120,
+                                            placeholder_text="Введите скорость прыжка в метрах в секунду")
+        self.velocity_entry.grid(row=8, column=0, columnspan=2, pady=20, padx=20, sticky="we")
+        self.right_frame_elements.append(self.velocity_entry)
 
-        # self.velocity_confirm_button = customtkinter.CTkButton(master=self.frame_right,
-        #                                         text="Подтвердить",
-        #                                         command=self.button_event)
-        # self.velocity_confirm_button.grid(row=8, column=2, columnspan=1, pady=20, padx=20, sticky="we")
-        # self.right_frame_elements.append(self.velocity_confirm_button)
+        self.velocity_confirm_button = customtkinter.CTkButton(master=self.frame_right,
+                                                text="Подтвердить")
+        self.velocity_confirm_button.grid(row=8, column=2, columnspan=1, pady=20, padx=20, sticky="we")
+        self.right_frame_elements.append(self.velocity_confirm_button)
 
         # set default values
         for elem in self.right_frame_elements:
@@ -208,16 +208,18 @@ class App(customtkinter.CTk):
                            self.entry_leg_girth.get(), self.entry_body_size.get(),
                            self.sex_var.get(), self.squat_var.get()]
         #DEBUG_DELETED
-        #if any([len(str(x)) == 0 or is_adv_digit(str(x)) and int(x) < 0 for x in parameters_pack]):
-        #    messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
-        if True:
-            self.parameters_pack = [72, 178, 38, 52, "M", 50]
-            for elem in self.left_frame_elements:
-                elem.configure(state=tkinter.DISABLED)
-            for elem in self.right_frame_elements:
-                elem.configure(state=tkinter.NORMAL)
+        if any([len(str(x)) == 0 or is_adv_digit(str(x)) and int(x) < 0 for x in parameters_pack]):
+           messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
+        # if True:
+        #     self.parameters_pack = [72, 178, 38, 52, "M", 50]
+        #     for elem in self.left_frame_elements:
+        #         elem.configure(state=tkinter.DISABLED)
+        #     for elem in self.right_frame_elements:
+        #         elem.configure(state=tkinter.NORMAL)
         else:
-            parameters_pack = [int(str(x), 10) for x in parameters_pack if str(x) not in "MF"]
+            def transform(x):
+                return int(str(x)) if str(x) not in "MF" else str(x)
+            self.parameters_pack = [transform(x) for x in parameters_pack]
             for elem in self.left_frame_elements:
                 elem.configure(state=tkinter.DISABLED)
             for elem in self.right_frame_elements:
