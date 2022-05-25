@@ -130,44 +130,6 @@ class App(customtkinter.CTk):
 
         # ============ frame_right ============
 
-        # self.radio_var = tkinter.IntVar(value=0)
-
-        # self.label_radio_group = customtkinter.CTkLabel(master=self.frame_right,
-        #                                                 text="CTkRadioButton Group:")
-        # self.label_radio_group.grid(row=0, column=2, columnspan=1, pady=20, padx=10, sticky="")
-
-        # self.radio_button_1 = customtkinter.CTkRadioButton(master=self.frame_right,
-        #                                                    variable=self.radio_var,
-        #                                                    value=0)
-        # self.radio_button_1.grid(row=1, column=2, pady=10, padx=20, sticky="n")
-
-        # self.radio_button_2 = customtkinter.CTkRadioButton(master=self.frame_right,
-        #                                                    variable=self.radio_var,
-        #                                                    value=1)
-        # self.radio_button_2.grid(row=2, column=2, pady=10, padx=20, sticky="n")
-
-        # self.radio_button_3 = customtkinter.CTkRadioButton(master=self.frame_right,
-        #                                                    variable=self.radio_var,
-        #                                                    value=2)
-        # self.radio_button_3.grid(row=3, column=2, pady=10, padx=20, sticky="n")
-
-        # self.slider_1 = customtkinter.CTkSlider(master=self.frame_right,
-        #                                         from_=0,
-        #                                         to=1,
-        #                                         number_of_steps=3,
-        #                                         command=self.progressbar.set)
-        # self.slider_1.grid(row=4, column=0, columnspan=2, pady=10, padx=20, sticky="we")
-        #
-        # self.slider_2 = customtkinter.CTkSlider(master=self.frame_right,
-        #                                         command=self.progressbar.set)
-        # self.slider_2.grid(row=5, column=0, columnspan=2, pady=10, padx=20, sticky="we")
-
-        # self.slider_button_1 = customtkinter.CTkButton(master=self.frame_right,
-        #                                                height=25,
-        #                                                text="Reset",
-        #                                                command=self.button_event)
-        # self.slider_button_1.grid(row=4, column=2, columnspan=1, pady=10, padx=20, sticky="we")
-
         self.curr_page = 1
         self.start_button = customtkinter.CTkButton(master=self.frame_right,
                                                     height=40,
@@ -189,20 +151,17 @@ class App(customtkinter.CTk):
                                                      placeholder_text="Введите скорость прыжка в метрах в секунду")
         self.velocity_entry.grid(row=8, column=0, columnspan=2, pady=20, padx=20, sticky="we")
         self.right_frame_elements.append(self.velocity_entry)
-
-        self.velocity_confirm_button = customtkinter.CTkButton(master=self.frame_right,
-                                                               text="Подтвердить")
-        self.velocity_confirm_button.grid(row=8, column=2, columnspan=1, pady=20, padx=20, sticky="we")
-        self.right_frame_elements.append(self.velocity_confirm_button)
+        #
+        # self.velocity_confirm_button = customtkinter.CTkButton(master=self.frame_right,
+        #                                                        text="Подтвердить")
+        # self.velocity_confirm_button.grid(row=8, column=2, columnspan=1, pady=20, padx=20, sticky="we")
+        # self.right_frame_elements.append(self.velocity_confirm_button)
 
         # set default values
         for elem in self.right_frame_elements:
             elem.configure(state=tkinter.DISABLED)
         self.parameters_pack = []
         self.plotter = None
-
-    # def button_event(self):
-    #     print("Button pressed")
 
     def confirm_event(self):
         parameters_pack = [self.entry_weight.get(), self.entry_height.get(),
@@ -211,12 +170,7 @@ class App(customtkinter.CTk):
         #DEBUG_DELETED
         if any([len(str(x)) == 0 or is_adv_digit(str(x)) and int(x) < 0 for x in parameters_pack]):
            messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
-        # if True:
-        #     self.parameters_pack = [72, 178, 38, 52, "M", 50]
-        #     for elem in self.left_frame_elements:
-        #         elem.configure(state=tkinter.DISABLED)
-        #     for elem in self.right_frame_elements:
-        #         elem.configure(state=tkinter.NORMAL)
+
         else:
             def transform(x):
                 return int(str(x)) if str(x) not in "MF" else str(x)
@@ -226,9 +180,14 @@ class App(customtkinter.CTk):
             for elem in self.right_frame_elements:
                 elem.configure(state=tkinter.NORMAL)
 
-
     def start_plotting(self):
-        self.plotter = Plotter(self.frame_right, self.parameters_pack, self.curr_page)
+        speed = self.velocity_entry.get()
+        if len(str(speed)) == 0 or is_adv_digit(str(speed)) and int(speed) < 0:
+            messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
+            return
+        else:
+            self.velocity_entry.configure(state=tkinter.DISABLED)
+        self.plotter = Plotter(self.frame_right, self.parameters_pack, int(str(speed)), self.curr_page)
         if self.curr_page == 1:
             self.start_button.configure(text="Вперед")
 
