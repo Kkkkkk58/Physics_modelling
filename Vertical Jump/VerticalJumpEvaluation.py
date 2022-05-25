@@ -1,7 +1,7 @@
 from Constants import GRAVITATIONAL_ACCELERATION
 from Human import *
 from math import *
-
+from functools import lru_cache
 
 class VerticalJumpEvaluation:
     def __init__(self, human, takeoff_velocity):
@@ -70,12 +70,15 @@ class VerticalJumpEvaluation:
             else 0
 
     # A = F * r * cos{a}
+    @lru_cache(None)
     def support_reaction_work(self, time):
-        return self.support_reaction_force(time) * 0
+        return self.support_reaction_force(time) * (self.distance(time) - self.distance(-self.takeoff_time())) * sqrt(1 - self.angle_sin(time)**2)\
+            + self.support_reaction_work(time - 0.01) if time >= -(self.takeoff_time()) else 0
 
     # N = A / t
     def support_reaction_power(self, time):
-        return self.support_reaction_work(time) * 1.0 / time
+        return self.support_reaction_work(time) * 1.0 / (self.takeoff_time() + time) if time != 0\
+            else self.support_reaction_power(time - 0.01)
 
     # def optimal_jump(self):
     #     muscle_force = 3 * self.human.mass * GRAVITATIONAL_ACCELERATION

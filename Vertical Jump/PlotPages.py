@@ -11,9 +11,9 @@ class PlotFirstPage(PlotAnimation):
               'color': 'r'},
              {'xlabel': 'Time (s)', 'ylabel': 'Velocity (m/s)', 'ylim': (-5, 5), 'xlim': (0, self.terminal_time),
               'color': 'g'}],
-            [{'xlabel': 'Time (s)', 'ylabel': 'Support Reaction Force (N)', 'ylim': (0, 2000), 'xlim': (0, self.terminal_time),
+            [{'xlabel': 'Time (s)', 'ylabel': 'Support Reaction Force (N)', 'ylim': (0, 5000), 'xlim': (0, self.terminal_time),
               'color': 'b'},
-             {'xlabel': 'Time (s)', 'ylabel': 'Distance (m)', 'ylim': (0, 5), 'xlim': (0, self.terminal_time),
+             {'xlabel': 'Time (s)', 'ylabel': 'Distance (m)', 'ylim': (0, 8), 'xlim': (0, self.terminal_time),
               'color': 'c'}]
         ]
 
@@ -42,7 +42,7 @@ class PlotSecondPage(PlotAnimation):
              ],
             [{'xlabel': 'Time (s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 1500), 'xlim': (0, self.terminal_time),
               'color': 'r'},
-             {'xlabel': 'Time (s)', 'ylabel': 'Support Reaction Work (j)', 'ylim': (0, 1500), 'xlim': (0, self.terminal_time),
+             {'xlabel': 'Time (s)', 'ylabel': 'Support Reaction Work (j)', 'ylim': (0, 10000), 'xlim': (0, self.terminal_time),
               'color': 'c'}]
         ]
 
