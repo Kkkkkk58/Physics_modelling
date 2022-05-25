@@ -7,7 +7,6 @@ class VerticalJumpEvaluation:
     def __init__(self, human, takeoff_velocity):
         self.human = human
         self.human.evaluate_mcp()
-        self.initial_angle = 1
         self.takeoff_velocity = takeoff_velocity
 
     # t_0 = 2 * d / V_0
@@ -29,8 +28,9 @@ class VerticalJumpEvaluation:
             if time >= 0 else self.coordinate(time) - (self.human.mcp - self.human.squat_depth)
    
     
-    def angle(self, time):
-       return pi / 2 if time >= 0 else self.initial_angle + (pi / 2 - self.initial_angle) / (self.takeoff_time() + time)
+    def angle_sin(self, time):
+       return 1 if time >= 0 \
+           else (self.human.hip_size - (self.human.mcp - self.coordinate(time))) / self.human.hip_size
 
     # V = V_0 - g * t
     def velocity(self, time):
@@ -39,8 +39,11 @@ class VerticalJumpEvaluation:
 
     # F = m * g * (h + d) / h
     def push_force(self):
-        return self.mass * GRAVITATIONAL_ACCELERATION * (self.max_height() - self.human.mcp + self.human.squat_depth) / self.human.squat_depth
-   
+        return self.human.mass * GRAVITATIONAL_ACCELERATION * (self.max_height() - self.human.mcp + self.human.squat_depth) / self.human.squat_depth
+    
+    def push_force_projection(self, time):
+        return self.push_force() * self.angle_sin(time)
+    
     # t = 2 * V_0 / g
     def flight_time(self):
         return 2.0 * self.takeoff_velocity / GRAVITATIONAL_ACCELERATION
@@ -63,7 +66,8 @@ class VerticalJumpEvaluation:
 
     # IDK
     def support_reaction_force(self, time):
-        return 0
+        return self.human.mass * GRAVITATIONAL_ACCELERATION + self.push_force_projection(time) if time < 0 \
+            else 0
 
     # A = F * r * cos{a}
     def support_reaction_work(self, time):
