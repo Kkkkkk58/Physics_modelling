@@ -17,5 +17,4 @@ class Human:
             else:
                 self.mcp = (-4.667 + 0.289 * self.height * 100 + \
                     0.383 * self.leg_girth * 100 + 0.301 * self.body_size * 100) / 100.0
-        print(self.mcp)
         return self.mcp

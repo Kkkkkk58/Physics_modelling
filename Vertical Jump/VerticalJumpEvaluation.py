@@ -13,17 +13,22 @@ class VerticalJumpEvaluation:
     def takeoff_time(self):
         return 2.0 * self.human.squat_depth / self.takeoff_velocity
     
+    def takeoff_acceleration(self):
+        return self.takeoff_velocity / self.takeoff_time()
     # Y = Y_0 + V_0 * t - 1/2 * g * t^2
     def coordinate(self, time):
-        return self.human.mcp + self.takeoff_velocity * time - (GRAVITATIONAL_ACCELERATION * time**2) / 2.0
+        return self.human.mcp + self.takeoff_velocity * time - (GRAVITATIONAL_ACCELERATION * time**2) / 2.0\
+            if time >= 0 else (self.human.mcp - self.human.squat_depth) + self.takeoff_velocity * (self.takeoff_time() + time) - (self.takeoff_acceleration() * (self.takeoff_time() + time)**2) / 2.0
 
     # S = s_0 + V_0 * t + 1/2 * g * t^2
     def distance(self, time):
-        return self.human.squat_depth + self.takeoff_velocity * time + (GRAVITATIONAL_ACCELERATION * time**2) / 2.0 
+        return self.human.squat_depth + self.takeoff_velocity * time + (GRAVITATIONAL_ACCELERATION * time**2) / 2.0\
+            if time >= 0 else self.coordinate(time) - (self.human.mcp - self.human.squat_depth)
    
     # V = V_0 - g * t
     def velocity(self, time):
-        return self.takeoff_velocity - GRAVITATIONAL_ACCELERATION * time
+        return self.takeoff_velocity - GRAVITATIONAL_ACCELERATION * time\
+            if time >= 0 else self.takeoff_acceleration() * (self.takeoff_time() + time)
 
     # F = m * g * (h + d) / h
     # There is also F = m * V / t - ???

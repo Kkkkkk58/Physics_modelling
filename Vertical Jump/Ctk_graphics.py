@@ -225,6 +225,7 @@ class App(customtkinter.CTk):
             for elem in self.right_frame_elements:
                 elem.configure(state=tkinter.NORMAL)
 
+
     def start_plotting(self):
         self.plotter = Plotter(self.frame_right, self.parameters_pack)
         self.plotter.plot()
