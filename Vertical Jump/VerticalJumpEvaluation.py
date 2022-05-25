@@ -28,7 +28,7 @@ class VerticalJumpEvaluation:
     # V = V_0 - g * t
     def velocity(self, time):
         return self.takeoff_velocity - GRAVITATIONAL_ACCELERATION * time\
-            if time >= 0 else self.takeoff_velocity
+            if time >= 0 else self.takeoff_acceleration() * (self.takeoff_time() + time)
 
     # F = m * g * (h + d) / h
     # There is also F = m * V / t - ???
