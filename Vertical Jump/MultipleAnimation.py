@@ -5,7 +5,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 class PlotAnimation:
     GRAPH_COUNT = 4
 
-    def __init__(self, frame, human):
+    def __init__(self, frame, human, velocity):
 
         self.frame = frame
         self.fig, self.axs = plt.subplots(2, 2)
@@ -14,7 +14,7 @@ class PlotAnimation:
 
         # evaluate human object (parameters should be pulled from gui)
         self.human = human
-        self.evaluation = VerticalJumpEvaluation(self.human, 3)
+        self.evaluation = VerticalJumpEvaluation(self.human, velocity)
         self.flight_time = self.evaluation.flight_time()
         self.takeoff_time = self.evaluation.takeoff_time()
         self.terminal_time = self.flight_time + self.takeoff_time

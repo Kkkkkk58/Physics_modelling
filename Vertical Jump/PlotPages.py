@@ -2,8 +2,8 @@ from MultipleAnimation import PlotAnimation
 
 
 class PlotFirstPage(PlotAnimation):
-    def __init__(self, frame, human):
-        super(PlotFirstPage, self).__init__(frame, human)
+    def __init__(self, frame, human, velocity):
+        super(PlotFirstPage, self).__init__(frame, human, velocity)
 
     def set_axes_info(self):
         return [
@@ -30,19 +30,19 @@ class PlotFirstPage(PlotAnimation):
 
 
 class PlotSecondPage(PlotAnimation):
-    def __init(self, frame, human):
-        super(PlotSecondPage, self).__init__(frame, human)
+    def __init(self, frame, human, velocity):
+        super(PlotSecondPage, self).__init__(frame, human, velocity)
 
     def set_axes_info(self):
         return [
-            [{'xlabel': 'Time (s)', 'ylabel': 'Kinetic Energy (j)', 'ylim': (0, 2000), 'xlim': (0, self.terminal_time),
+            [{'xlabel': 'Time (s)', 'ylabel': 'Kinetic Energy (j)', 'ylim': (0, 1500), 'xlim': (0, self.terminal_time),
               'color': 'g'}, 
-              {'xlabel': 'Time (s)', 'ylabel': 'Potential Energy (j)', 'ylim': (0, 2000), 'xlim': (0, self.terminal_time),
+              {'xlabel': 'Time (s)', 'ylabel': 'Potential Energy (j)', 'ylim': (0, 1500), 'xlim': (0, self.terminal_time),
               'color': 'b'}
              ],
-            [{'xlabel': 'Time (s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 2000), 'xlim': (0, self.terminal_time),
+            [{'xlabel': 'Time (s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 1500), 'xlim': (0, self.terminal_time),
               'color': 'r'},
-             {'xlabel': 'Time (s)', 'ylabel': 'Support Reaction Work (j)', 'ylim': (0, 2000), 'xlim': (0, self.terminal_time),
+             {'xlabel': 'Time (s)', 'ylabel': 'Support Reaction Work (j)', 'ylim': (0, 1500), 'xlim': (0, self.terminal_time),
               'color': 'c'}]
         ]
 

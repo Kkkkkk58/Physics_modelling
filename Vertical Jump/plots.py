@@ -18,13 +18,13 @@ class Values(IntEnum):
 
 
 class Plotter:
-    def __init__(self, frame, data, page):
+    def __init__(self, frame, data, velocity, page):
         self.human = Human(data[Values.IN_WEIGHT], data[Values.IN_HEIGHT], data[Values.IN_SEX],
                            data[Values.IN_LEG_GIRTH], data[Values.IN_LEG_GIRTH], data[Values.IN_SQUAT])
         if page == 1:
-            self.plot_animation = PlotFirstPage(frame, self.human)
+            self.plot_animation = PlotFirstPage(frame, self.human, velocity)
         else:
-            self.plot_animation = PlotSecondPage(frame, self.human)
+            self.plot_animation = PlotSecondPage(frame, self.human, velocity)
 
     def plot(self):
         self.plot_animation.display()
