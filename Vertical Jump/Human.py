@@ -7,6 +7,7 @@ class Human:
         self.leg_girth = leg_girth / 100.0
         self.body_size = body_size / 100.0
         self.squat_depth = squat_depth / 100.0
+        self.hip_size = self.height / 4.0
     
     def evaluate_mcp(self):
         if self.mcp == -1:

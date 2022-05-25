@@ -1,20 +1,23 @@
 from Constants import GRAVITATIONAL_ACCELERATION
 from Human import *
+from math import *
 
 
 class VerticalJumpEvaluation:
     def __init__(self, human, takeoff_velocity):
         self.human = human
         self.human.evaluate_mcp()
-
+        self.initial_angle = 1
         self.takeoff_velocity = takeoff_velocity
 
     # t_0 = 2 * d / V_0
     def takeoff_time(self):
         return 2.0 * self.human.squat_depth / self.takeoff_velocity
     
+    # a = V_0 / t_0
     def takeoff_acceleration(self):
         return self.takeoff_velocity / self.takeoff_time()
+
     # Y = Y_0 + V_0 * t - 1/2 * g * t^2
     def coordinate(self, time):
         return self.human.mcp + self.takeoff_velocity * time - (GRAVITATIONAL_ACCELERATION * time**2) / 2.0\
@@ -25,13 +28,16 @@ class VerticalJumpEvaluation:
         return self.human.squat_depth + self.takeoff_velocity * time + (GRAVITATIONAL_ACCELERATION * time**2) / 2.0\
             if time >= 0 else self.coordinate(time) - (self.human.mcp - self.human.squat_depth)
    
+    
+    def angle(self, time):
+       return pi / 2 if time >= 0 else self.initial_angle + (pi / 2 - self.initial_angle) / (self.takeoff_time() + time)
+
     # V = V_0 - g * t
     def velocity(self, time):
         return self.takeoff_velocity - GRAVITATIONAL_ACCELERATION * time\
             if time >= 0 else self.takeoff_acceleration() * (self.takeoff_time() + time)
 
     # F = m * g * (h + d) / h
-    # There is also F = m * V / t - ???
     def push_force(self):
         return self.mass * GRAVITATIONAL_ACCELERATION * (self.max_height() - self.human.mcp + self.human.squat_depth) / self.human.squat_depth
    
