@@ -168,6 +168,7 @@ class App(customtkinter.CTk):
         #                                                command=self.button_event)
         # self.slider_button_1.grid(row=4, column=2, columnspan=1, pady=10, padx=20, sticky="we")
 
+        self.curr_page = 1
         self.start_button = customtkinter.CTkButton(master=self.frame_right,
                                                     height=40,
                                                     text="Пуск",
@@ -184,13 +185,13 @@ class App(customtkinter.CTk):
         self.right_frame_elements.append(self.reset_button)
 
         self.velocity_entry = customtkinter.CTkEntry(master=self.frame_right,
-                                            width=120,
-                                            placeholder_text="Введите скорость прыжка в метрах в секунду")
+                                                     width=120,
+                                                     placeholder_text="Введите скорость прыжка в метрах в секунду")
         self.velocity_entry.grid(row=8, column=0, columnspan=2, pady=20, padx=20, sticky="we")
         self.right_frame_elements.append(self.velocity_entry)
 
         self.velocity_confirm_button = customtkinter.CTkButton(master=self.frame_right,
-                                                text="Подтвердить")
+                                                               text="Подтвердить")
         self.velocity_confirm_button.grid(row=8, column=2, columnspan=1, pady=20, padx=20, sticky="we")
         self.right_frame_elements.append(self.velocity_confirm_button)
 
@@ -227,10 +228,19 @@ class App(customtkinter.CTk):
 
 
     def start_plotting(self):
-        self.plotter = Plotter(self.frame_right, self.parameters_pack)
+        self.plotter = Plotter(self.frame_right, self.parameters_pack, self.curr_page)
+        if self.curr_page == 1:
+            self.start_button.configure(text="Вперед")
+
+            self.curr_page = 2
+        else:
+            self.curr_page = 1
+            self.start_button.configure(text="Назад")
         self.plotter.plot()
 
     def reset(self):
+        self.start_button.configure(text="Пуск")
+        self.curr_page = 1
         for elem in self.left_frame_elements:
             elem.configure(state=tkinter.NORMAL)
         for elem in self.right_frame_elements:
