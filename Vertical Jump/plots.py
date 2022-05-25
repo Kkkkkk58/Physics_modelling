@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image, ImageTk
 from VerticalJumpEvaluation import VerticalJumpEvaluation
 from Human import *
-import MultipleAnimation
+from PlotPages import PlotFirstPage, PlotSecondPage, PlotAnimation
 
 
 class Values(IntEnum):
@@ -18,10 +18,13 @@ class Values(IntEnum):
 
 
 class Plotter:
-    def __init__(self, frame, data):
+    def __init__(self, frame, data, page):
         self.human = Human(data[Values.IN_WEIGHT], data[Values.IN_HEIGHT], data[Values.IN_SEX],
                            data[Values.IN_LEG_GIRTH], data[Values.IN_LEG_GIRTH], data[Values.IN_SQUAT])
-        self.plot_animation = MultipleAnimation.PlotAnimation(frame, self.human)
+        if page == 1:
+            self.plot_animation = PlotFirstPage(frame, self.human)
+        else:
+            self.plot_animation = PlotSecondPage(frame, self.human)
 
     def plot(self):
         self.plot_animation.display()

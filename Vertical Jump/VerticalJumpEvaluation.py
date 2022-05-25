@@ -20,12 +20,14 @@ class VerticalJumpEvaluation:
 
     # Y = Y_0 + V_0 * t - 1/2 * g * t^2
     def coordinate(self, time):
-        return self.human.mcp + self.takeoff_velocity * time - (GRAVITATIONAL_ACCELERATION * time**2) / 2.0\
-            if time >= 0 else (self.human.mcp - self.human.squat_depth) + self.takeoff_velocity * (self.takeoff_time() + time) - (self.takeoff_acceleration() * (self.takeoff_time() + time)**2) / 2.0
+        return self.human.mcp + self.takeoff_velocity * time - (GRAVITATIONAL_ACCELERATION * time ** 2) / 2.0 \
+            if time >= 0 else (self.human.mcp - self.human.squat_depth) + self.takeoff_velocity * (
+                    self.takeoff_time() + time) - (
+                                          self.takeoff_acceleration() * (self.takeoff_time() + time) ** 2) / 2.0
 
     # S = s_0 + V_0 * t + 1/2 * g * t^2
     def distance(self, time):
-        return self.human.squat_depth + self.takeoff_velocity * time + (GRAVITATIONAL_ACCELERATION * time**2) / 2.0\
+        return self.human.squat_depth + self.takeoff_velocity * time + (GRAVITATIONAL_ACCELERATION * time ** 2) / 2.0 \
             if time >= 0 else self.coordinate(time) - (self.human.mcp - self.human.squat_depth)
    
     
@@ -34,29 +36,30 @@ class VerticalJumpEvaluation:
 
     # V = V_0 - g * t
     def velocity(self, time):
-        return self.takeoff_velocity - GRAVITATIONAL_ACCELERATION * time\
+        return self.takeoff_velocity - GRAVITATIONAL_ACCELERATION * time \
             if time >= 0 else self.takeoff_acceleration() * (self.takeoff_time() + time)
 
     # F = m * g * (h + d) / h
     def push_force(self):
-        return self.mass * GRAVITATIONAL_ACCELERATION * (self.max_height() - self.human.mcp + self.human.squat_depth) / self.human.squat_depth
-   
+        return self.mass * GRAVITATIONAL_ACCELERATION * (
+                    self.max_height() - self.human.mcp + self.human.squat_depth) / self.human.squat_depth
+
     # t = 2 * V_0 / g
     def flight_time(self):
         return 2.0 * self.takeoff_velocity / GRAVITATIONAL_ACCELERATION
 
     # H = H_0 + V_0 ^ 2 / (2 * g)
     def max_height(self):
-        return self.human.mcp +  self.takeoff_velocity**2 / (2.0 * GRAVITATIONAL_ACCELERATION)
+        return self.human.mcp + self.takeoff_velocity ** 2 / (2.0 * GRAVITATIONAL_ACCELERATION)
 
     # E + E_к + E_п
     def full_energy(self, time):
         return self.potential_energy(time) + self.kinetic_energy(time)
-    
+
     # E_к = m * V^2 / 2
     def kinetic_energy(self, time):
-        return self.human.mass * self.velocity(time)**2 / 2.0
-    
+        return self.human.mass * self.velocity(time) ** 2 / 2.0
+
     # E_п = m * g * h
     def potential_energy(self, time):
         return self.human.mass * GRAVITATIONAL_ACCELERATION * self.coordinate(time)
@@ -77,7 +80,5 @@ class VerticalJumpEvaluation:
     #     muscle_force = 3 * self.human.mass * GRAVITATIONAL_ACCELERATION
 
 
-    
-    
-    
+
 

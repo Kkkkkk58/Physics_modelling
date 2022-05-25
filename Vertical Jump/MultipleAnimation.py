@@ -19,18 +19,25 @@ class PlotAnimation:
         self.takeoff_time = self.evaluation.takeoff_time()
         self.terminal_time = self.flight_time + self.takeoff_time
 
-        self.axes_info = [
-            [{'xlabel': 'Time(s)', 'ylabel': 'Coordinate (m)', 'ylim': (0, 2), 'xlim': (0, self.terminal_time),
-              'color': 'r'},
-             {'xlabel': 'Time(s)', 'ylabel': 'Velocity (m/s)', 'ylim': (-10, 10), 'xlim': (0, self.terminal_time),
-              'color': 'g'}],
-            [{'xlabel': 'Time(s)', 'ylabel': 'Total Energy (j)', 'ylim': (0, 5000), 'xlim': (0, self.terminal_time),
-              'color': 'b'},
-             {'xlabel': 'Time(s)', 'ylabel': 'Distance (m)', 'ylim': (0, 5), 'xlim': (0, self.terminal_time),
-              'color': 'c'}]
-        ]
+        # set axes info (limits, colors, coord labels)
+        self.axes_info = self.set_axes_info()
 
         # Initializing all the axes
+        self.initialize_axs()
+        self.xdata = []
+        self.ydata1 = []
+        self.ydata2 = []
+        self.ydata3 = []
+        self.ydata4 = []
+
+        plt.subplots_adjust(hspace=0.9, wspace=0.8, top=0.9)
+        # initializing all the lines
+        self.line = self.get_lines()
+
+    def set_axes_info(self):
+        return
+
+    def initialize_axs(self):
         for i in range(0, 2):
             for j in range(0, 2):
                 self.axs[i][j].set_xlabel(self.axes_info[i][j]['xlabel'])
@@ -43,20 +50,13 @@ class PlotAnimation:
                 # включаем дополнительную сетку
                 self.axs[i][j].grid(which='minor', linestyle=':')
 
-        plt.subplots_adjust(hspace=0.9, wspace=0.8, top=0.9)
-
-        # initializing all the lines
+    def get_lines(self):
         line1, = self.axs[0][0].plot([], [], lw=2, color=self.axes_info[0][0]['color'])
         line2, = self.axs[0][1].plot([], [], lw=2, color=self.axes_info[0][1]['color'])
         line3, = self.axs[1][0].plot([], [], lw=2, color=self.axes_info[1][0]['color'])
         line4, = self.axs[1][1].plot([], [], lw=2, color=self.axes_info[1][1]['color'])
-        self.line = [line1, line2, line3, line4]
-
-        self.xdata = []
-        self.ydata1 = []
-        self.ydata2 = []
-        self.ydata3 = []
-        self.ydata4 = []
+        line = [line1, line2, line3, line4]
+        return line
 
     # Function to be called when the start button is pressed
     def display(self):
@@ -66,16 +66,7 @@ class PlotAnimation:
 
     # coroutine to push data to matplotlib
     def data_gen(self):
-        t = 0
-        # All the evaluations goes here
-        while t < self.terminal_time:
-            t += 0.01
-            y1 = self.evaluation.coordinate(t - self.takeoff_time)
-            y2 = self.evaluation.velocity(t - self.takeoff_time)
-            y3 = self.evaluation.full_energy(t - self.takeoff_time)
-            y4 = self.evaluation.distance(t - self.takeoff_time)
-            # adapted the data generator to yield both sin and cos
-            yield t, y1, y2, y3, y4
+        pass
 
     def run(self, data):
         # update the data
