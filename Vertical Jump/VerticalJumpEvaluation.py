@@ -20,30 +20,18 @@ class VerticalJumpEvaluation:
     # Y = Y_0 + V_0 * t - 1/2 * g * t^2
     def coordinate(self, time):
         return self.human.mcp + self.takeoff_velocity * time - (GRAVITATIONAL_ACCELERATION * time**2) / 2.0\
-            if time >= 0 else (self.human.mcp - self.human.squat_depth) + self.takeoff_velocity * (self.takeoff_time() + time) - (self.takeoff_acceleration() * (self.takeoff_time() + time)**2) / 2.0
+            if time >= 0 else (self.human.mcp - self.human.squat_depth) + self.takeoff_velocity * (self.takeoff_time() + time)\
+                 - (self.takeoff_acceleration() * (self.takeoff_time() + time)**2) / 2.0
 
     # S = s_0 + V_0 * t + 1/2 * g * t^2
     def distance(self, time):
         return self.human.squat_depth + self.takeoff_velocity * time + (GRAVITATIONAL_ACCELERATION * time**2) / 2.0\
             if time >= 0 else self.coordinate(time) - (self.human.mcp - self.human.squat_depth)
-   
-    # sin(a) = (hip - (mcp - y)) / hip
-    def angle_sin(self, time):
-       return 1 if time >= 0 \
-           else (self.human.hip_size - (self.human.mcp - self.coordinate(time))) / self.human.hip_size
-
+            
     # V = V_0 - g * t
     def velocity(self, time):
         return self.takeoff_velocity - GRAVITATIONAL_ACCELERATION * time\
             if time >= 0 else self.takeoff_acceleration() * (self.takeoff_time() + time)
-
-    # F = m * g * (h + d) / h
-    def push_force(self):
-        return self.human.mass * GRAVITATIONAL_ACCELERATION * (self.max_height() - self.human.mcp + self.human.squat_depth) / self.human.squat_depth
-    
-    # F_y = F * sin(a)
-    def push_force_projection(self, time):
-        return self.push_force() * self.angle_sin(time)
     
     # t = 2 * V_0 / g
     def flight_time(self):
@@ -65,11 +53,24 @@ class VerticalJumpEvaluation:
     def potential_energy(self, time):
         return self.human.mass * GRAVITATIONAL_ACCELERATION * self.coordinate(time)
 
+    # sin(a) = (hip - (mcp - y)) / hip
+    def angle_sin(self, time):
+       return 1 if time >= 0 \
+           else (self.human.hip_size - (self.human.mcp - self.coordinate(time))) / self.human.hip_size
+
+    # F = m * g * (h + d) / h
+    def push_force(self):
+        return self.human.mass * GRAVITATIONAL_ACCELERATION * (self.max_height() - self.human.mcp + self.human.squat_depth)\
+             / self.human.squat_depth
+    
+    # F_y = F * sin(a)
+    def push_force_projection(self, time):
+        return self.push_force() * self.angle_sin(time)
+        
     # F_sr = mg + F_y
     def support_reaction_force(self, time):
         return self.human.mass * GRAVITATIONAL_ACCELERATION + self.push_force_projection(time) if time < 0 \
             else 0
-
     # A = F * r * cos{a}
     @lru_cache(None)
     def support_reaction_work(self, time):
