@@ -1,4 +1,3 @@
-# Author: fddf
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -13,10 +12,10 @@ import copy
 
 def analyticalPreisachFunction1(a: float, b: float, c: float, d: float, n: float, p: float, q: float, beta: np.ndarray,
                                 alpha: np.ndarray) -> np.ndarray:
-    """
-    Function based on Paper IEEE TRANSACTIONS ON MAGNETICS, VOL. 39, NO. 3, MAY 2003 'Analytical  Approximation  of  Preisach
-    Distribution Functions' by Janos Fuezi
-    """
+#     """
+#     Function based on Paper IEEE TRANSACTIONS ON MAGNETICS, VOL. 39, NO. 3, MAY 2003 'Analytical  Approximation  of  Preisach
+#     Distribution Functions' by Janos Fuezi
+#     """
     hm = (alpha + beta) / 2
     hc = (alpha - beta) / 2
     nom1 = c
@@ -61,7 +60,7 @@ def removeInBetween(arr: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Function for removing in between points of an array
     """
-    whipeout_indexes = np.empty(len(arr), dtype=np.bool)
+    whipeout_indexes = np.empty(len(arr), dtype=bool)
     if len(arr) < 3:
         whipeout_indexes[:] = True
         return arr, whipeout_indexes
@@ -77,7 +76,7 @@ def removeInBetween(arr: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         return arr[whipeout_indexes], whipeout_indexes
 
 
-def removeRedundantPoints(pointsX: np.ndarray, pointsY: np.ndarray) -> np.ndarray:
+def removeRedundantPoints(pointsX: np.ndarray, pointsY: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """
     Function for removing redundant points inside vertices and horizontal lines of staircase polylines
     """
@@ -298,37 +297,6 @@ class PreisachModel:
             raise ValueError('Given Parameter must be a callable function')
         self.everett = everett
 
-    def showEverettFunction(self, fig: plt.Figure) -> None:
-        """
-        Show the Everett function in custom figure provided as argument
-        """
-        ax = fig.add_subplot(111, projection='3d')
-        Z = self.everett(self.gridX, self.gridY)
-        ax.plot_surface(gridX, gridY, Z)
-        ax.set_title('Everett Function interpolated on regular grid')
-        ax.set_xlabel('beta')
-        ax.set_ylabel('alpha')
-        ax.set_zlabel('z')
-        plt.show()
-
-    def showInterface(self, fig: plt.Figure) -> None:
-        """
-        Show the current  interface in custom figure provided as argument
-        """
-        ax = fig.add_subplot(111)
-        ax.plot(self.interfaceX, self.interfaceY, 'r', linewidth=3)
-        ax.plot(np.array([-self.beta0, self.beta0, -self.beta0, -self.beta0]),
-                np.array([-self.alpha0, self.alpha0, self.alpha0, -self.alpha0]), linewidth=3)
-        ax.xlim(-self.beta0 * 1.1, self.beta0 * 1.1)
-        ax.ylim(-self.alpha0 * 1.1, self.alpha0 * 1.1)
-        ax.title('{},{}'.format(self.interfaceX.tolist(), self.interfaceY.tolist()))
-        ax.xlabel('Beta coefficients')
-        ax.ylabel('Alpha coefficients')
-        ax.axes().set_aspect('equal')
-        ax.grid()
-        ax.legend(['Interface', 'Preisach Plane'])
-        ax.show()
-
     def animateHysteresis(self) -> animation.FuncAnimation:
         # @Todo vector length of u and out must be same
         self.historyU = self.historyU[1:]
@@ -380,13 +348,72 @@ class PreisachModel:
         plt.show()
         return simulation
 
+    # Use that for initializing the hysteresis model state using analytic 1
+    def configureModelState1(self, A, B, C, D, N, P, Q):
+        self.preisach = initPreisachWithOnes(self.gridX)
+        self.preisach = analyticalPreisachFunction1(A, B, C, D, N, P, Q, self.gridX, self.gridY)
+        self.initializeModelEverett()
 
-if __name__ == "__main__":
+    # Use that for initializing the hysteresis model state using analytic 2
+    def configureModelState2(self, A : int, Hc : float, sigma : float):
+        self.preisach = analyticalPreisachFunction2(A, Hc, sigma, self.gridX, self.gridY)
+        self.initializeModelEverett()
+
+    def initializeModelEverett(self):
+
+        # Calculate Everett function from preisach function
+        everett = preisachIntegration(self.width, self.preisach)
+
+        # Scale Everett function to a maximum value of 1
+        everett = everett / np.max(everett)
+
+        # Calculate linear Interpolator for Everett function
+        points = np.zeros((everett.size, 2), dtype=np.float64)
+        points[:, 0] = self.gridX.flatten()
+        points[:, 1] = self.gridY.flatten()
+        values = everett.flatten()
+        everettInterp = LinearNDInterpolator(points, values)
+        self.setEverettFunction(everettInterp)
+
+    def printHysteresis(self):
+        # calculate inverse model
+        self.invModel = self.invert()
+
+        self.createSignal()
+        self.animateHysteresis()
+
+    # Create excitation signal
+    def createSignal(self):
+        nSamps = 2500
+        phi = np.linspace(0, 2 * np.pi + np.pi / 2, nSamps)
+
+        sawtooth = np.zeros(nSamps, dtype=np.float64)
+        sawtooth[phi < np.pi / 2] = 0.7 * 2 / np.pi * phi[phi < np.pi / 2]
+        sawtooth[np.logical_and(phi < 3 * np.pi / 2, phi > np.pi / 2)] = -0.7 * 2 / np.pi * (
+                phi[np.logical_and(phi < 3 * np.pi / 2, phi > np.pi / 2)] - np.pi)
+        sawtooth[phi > 3 * np.pi / 2] = 0.7 * 2 / np.pi * (phi[phi > 3 * np.pi / 2] - 2 * np.pi)
+
+        input = 0.15 * np.sin(30 * phi) + sawtooth
+        output = np.zeros_like(input, dtype=np.float64)
+        middle = np.zeros_like(input, dtype=np.float64)
+
+        self.setDemagState(80)
+        self.invModel.setDemagState(80)
+
+        # Apply input to inverse model and then apply it to non inverse model
+        for i in range(len(input)):
+            middle[i] = self(input[i])
+            output[i] = self.invModel(middle[i])
+
+# Basic example of Preisach model usage
+def exampleHysteresis():
 
     model = PreisachModel(200, 1)
-    gridX = model.gridX
-    gridY = model.gridY
-    width = model.width
+    A = 1
+    Hc = 0.01
+    sigma = 0.03
+    model.configureModelState2(A, Hc, sigma)
+    model.printHysteresis()
 
     ######## init with ones #########
     # preisach = initPreisachWithOnes()
@@ -401,69 +428,8 @@ if __name__ == "__main__":
     # Q = 0.04
     # preisach = analyticalPreisachFunction1(A, B, C, D, N, P, Q, gridX, gridY)
 
-    ######## analytic 2 #############
-    A = 1
-    Hc = 0.01
-    sigma = 0.03
-    preisach = analyticalPreisachFunction2(A, Hc, sigma, gridX, gridY)
+    # ######## analytic 2 #############
+    # A = 1
+    # Hc = 0.01
+    # sigma = 0.03
 
-    # Calculate Everett function from preisach function
-    everett = preisachIntegration(width, preisach)
-
-    # Scale Everett function to a maximum value of 1
-    everett = everett / np.max(everett)
-
-    # Calculate linear Interpolator for Everett function
-    points = np.zeros((everett.size, 2), dtype=np.float64)
-    points[:, 0] = gridX.flatten()
-    points[:, 1] = gridY.flatten()
-    values = everett.flatten()
-    everettInterp = LinearNDInterpolator(points, values)
-    model.setEverettFunction(everettInterp)
-
-    # show everett function of model
-    fig = plt.figure()
-    model.showEverettFunction(fig)
-
-    # calculate inverse model
-    invModel = model.invert()
-
-    # show everett function of inverse model
-    fig = plt.figure()
-    invModel.showEverettFunction(fig)
-
-    # Create excitation signal
-    nSamps = 2500
-    phi = np.linspace(0, 2 * np.pi + np.pi / 2, nSamps)
-
-    sawtooth = np.zeros(nSamps, dtype=np.float64)
-    sawtooth[phi < np.pi / 2] = 0.7 * 2 / np.pi * phi[phi < np.pi / 2]
-    sawtooth[np.logical_and(phi < 3 * np.pi / 2, phi > np.pi / 2)] = -0.7 * 2 / np.pi * (
-            phi[np.logical_and(phi < 3 * np.pi / 2, phi > np.pi / 2)] - np.pi)
-    sawtooth[phi > 3 * np.pi / 2] = 0.7 * 2 / np.pi * (phi[phi > 3 * np.pi / 2] - 2 * np.pi)
-
-    input = 0.15 * np.sin(30 * phi) + sawtooth
-    output = np.zeros_like(input, dtype=np.float64)
-    middle = np.zeros_like(input, dtype=np.float64)
-
-    model.setDemagState(80)
-    invModel.setDemagState(80)
-
-    # Apply input to inverse model and then apply it to non inverse model
-    for i in range(len(input)):
-        middle[i] = model(input[i])
-        output[i] = invModel(middle[i])
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.plot(input)
-    ax.plot(middle)
-    ax.plot(output)
-    ax.legend(['input', 'middle', 'output'])
-    plt.show()
-
-    simulation1 = model.animateHysteresis()
-    simulation2 = invModel.animateHysteresis()
-    # Uncomment the next line if you want to save the animation
-    # simulation1.save(filename='hysterese_simulation.mp4', fps=30, dpi=300)
-    # simulation2.save(filename='hysterese_invertiert_simulation.mp4', fps=30, dpi=300)
