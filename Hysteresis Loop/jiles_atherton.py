@@ -61,9 +61,14 @@ class JilesAthertonFormulas:
         m_an_iso = JilesAthertonFormulas.get_m_an_iso(h_e, isotropic)
         return (1 - t) * m_an_iso + t * m_an_aniso
 
-    def get_m(h: float, m_an: float, initial_h: float, delta: int, isotropic: IsotropicCoefficients, dm_an_dh: float) -> float:
-        args = [m_an, delta, isotropic, dm_an_dh]
-        return runge_kutta(JilesAthertonFormulas.get_dm_dh, initial_h, 0, h, 1, args)
+    # def get_m(h: float, m_an: float, initial_h: float, delta: int, isotropic: IsotropicCoefficients, dm_an_dh: float) -> float:
+    #     args = [m_an, delta, isotropic, dm_an_dh]
+    #     return runge_kutta(JilesAthertonFormulas.get_dm_dh, initial_h, 0, h, 10, args)
+
+    def get_m(dh: float, m: float, m_an: float, d_m_an: float, delta: int, isotropic: IsotropicCoefficients) -> float:
+        dm = m_an - m
+        return m + 1 / (1 + isotropic.c) * (dm / (isotropic.k * delta - isotropic.alpha * dm))\
+                * dh + (isotropic.c / (isotropic.c + 1)) * d_m_an
 
     def get_m_an_iso(h_e: float, isotropic: IsotropicCoefficients) -> float:
         if h_e == 0:
@@ -91,7 +96,7 @@ class JilesAthertonModel:
         self.isotropic = self.anisotropic = None
         self.fill_h(delta_h, initial_position, initial_position * 2)
 
-    def fill_h(self, delta_h: float, initial_position: int, hysteresis_peak: int):
+    def fill_h(self, delta_h: float, initial_position: int, hysteresis_peak: int) -> None:
         self.h = [0]
         for i in range(initial_position):
             self.h.append(self.h[i] + delta_h)
@@ -118,21 +123,17 @@ class JilesAthertonModel:
                 delta.append(-1)
 
         Man = [0]
-        dMirrdH = [0]
-        Mirr = [0]
         m = [0]
 
         for i in range(self.plotting_steps):
             h_e = JilesAthertonFormulas.get_h_e(self.h[i + 1], self.isotropic.alpha, m[i])
             m_an = JilesAthertonFormulas.get_m_an(h_e, self.isotropic, self.anisotropic)
             Man.append(m_an)
-            # dman_dh = ((Man[i + 1] - Man[i]) / (self.h[i + 1] - self.h[i]))
+            dman = Man[i + 1] - Man[i]
+            dh = self.h[i + 1] - self.h[i]
+            m_cur = JilesAthertonFormulas.get_m(dh, m[i], Man[i + 1], dman, delta[i + 1], self.isotropic)
             # m_cur = JilesAthertonFormulas.get_m(self.h[i + 1], m_an, self.initial_position, delta[i + 1], self.isotropic, dman_dh)
-            # m.append(m_cur)
-            #dmirrdh = JilesAthertonFormulas.get_dmirr_dh()
-            dMirrdH.append((Man[i+1] - m[i]) / (self.isotropic.k * delta[i+1] - self.isotropic.alpha * (Man[i + 1] - m[i])))
-            Mirr.append(Mirr[i] + dMirrdH[i + 1] * (self.h[i+1] - self.h[i]))
-            m.append(self.isotropic.c * (Man[i + 1] - Man[i]) + (1 - self.isotropic.c) * Mirr[i + 1])
+            m.append(m_cur)
 
         B = [MU_0 * i for i in m]
 
