@@ -1,2 +1,2 @@
-# Physics_modelling_2sem
+# Physics_modelling
 The repository for physical modelling
