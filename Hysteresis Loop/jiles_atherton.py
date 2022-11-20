@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from hysteresis_loop.core.constants import MU0
+from constants import MU0
 
 def langevin(x: float) -> float:
     return 1 / np.tanh(x) - 1 / x
@@ -20,12 +20,12 @@ class AnisotropicCoefficients:
         self.t = t
 
 class JilesAthertonModel: 
-    def __init__(self, delta_h: float = 20, initial_position: float = 125) -> None:
-        self.plotting_steps = initial_position * 3.0
+    def __init__(self, delta_h: float = 20, initial_position: int = 125) -> None:
+        self.plotting_steps = initial_position * 5
         self.isotropic = self.anisotropic = None
-        self.fill_h(delta_h, initial_position, initial_position * 2.0)
+        self.fill_h(delta_h, initial_position, initial_position * 2)
 
-    def fill_h(self, delta_h: float, initial_position: float, hysteresis_peak: float):
+    def fill_h(self, delta_h: float, initial_position: int, hysteresis_peak: int):
         self.h = [0]
         for i in range(initial_position):
             self.h.append(self.h[i] + delta_h)
