@@ -30,7 +30,7 @@ class PlotFirstPage(PlotAnimation):
 
 
 class PlotSecondPage(PlotAnimation):
-    def __init(self, frame, human, velocity):
+    def __init__(self, frame, human, velocity):
         super(PlotSecondPage, self).__init__(frame, human, velocity)
 
     def set_axes_info(self):

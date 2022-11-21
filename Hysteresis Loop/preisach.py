@@ -3,10 +3,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import collections
 from matplotlib import gridspec
-from mpl_toolkits.mplot3d import Axes3D
-from scipy.interpolate import LinearNDInterpolator, griddata
+from scipy.interpolate import LinearNDInterpolator
 from typing import Tuple, Callable, List
-import time
 import copy
 
 
@@ -313,10 +311,14 @@ class PreisachModel:
         frames = len(self.historyInterfaceX)
 
         gs = gridspec.GridSpec(1, 3, height_ratios=[1], width_ratios=[1, 1, 1])
-        fig1 = plt.figure(figsize=(18, 5))
+        facecolor = "#5a595b"
+        fig1 = plt.figure(figsize=(20, 10), facecolor="#2f2e30")
         ax1 = plt.subplot(gs[0, 0])
+        ax1.set_facecolor(facecolor)
         ax2 = plt.subplot(gs[0, 1])
+        ax2.set_facecolor(facecolor)
         ax3 = plt.subplot(gs[0, 2])
+        ax3.set_facecolor(facecolor)
 
         # create plot of input
         ax1.plot(self.historyU, linewidth=1)
@@ -345,8 +347,7 @@ class PreisachModel:
                                              fargs=(self, line1, line2, line3), interval=25,
                                              blit=True, repeat=False)
 
-        plt.show()
-        return simulation
+        return (simulation, fig1, ax1, ax2, ax3)
 
     # Use that for initializing the hysteresis model state using analytic 1
     def configureModelState1(self, A, B, C, D, N, P, Q):
@@ -380,7 +381,7 @@ class PreisachModel:
         self.invModel = self.invert()
 
         self.createSignal()
-        self.animateHysteresis()
+        return self.animateHysteresis()
 
     # Create excitation signal
     def createSignal(self):
@@ -415,21 +416,18 @@ def exampleHysteresis():
     model.configureModelState2(A, Hc, sigma)
     model.printHysteresis()
 
-    ######## init with ones #########
-    # preisach = initPreisachWithOnes()
-
-    # ####### analytic 1 #############
-    # A = 71
-    # B = -0.018
-    # C = 0.013
-    # D = 0.068
-    # N = 15
-    # P = 2500
-    # Q = 0.04
-    # preisach = analyticalPreisachFunction1(A, B, C, D, N, P, Q, gridX, gridY)
-
-    # ######## analytic 2 #############
-    # A = 1
-    # Hc = 0.01
-    # sigma = 0.03
-
+######## init with ones #########
+# preisach = initPreisachWithOnes()
+# ####### analytic 1 #############
+# A = 71
+# B = -0.018
+# C = 0.013
+# D = 0.068
+# N = 15
+# P = 2500
+# Q = 0.04
+# preisach = analyticalPreisachFunction1(A, B, C, D, N, P, Q, gridX, gridY)
+# ######## analytic 2 #############
+# A = 1
+# Hc = 0.01
+# sigma = 0.03

@@ -15,7 +15,7 @@ def runge_kutta(f, x0, y0, x, h, args):
     n = (int)((x - x0)/h)
     # Iterate for number of iterations
     y = y0
-    for i in range(1, n + 1):
+    for _ in range(1, n + 1):
         k1 = h * f(x0, y, *args)
         k2 = h * f(x0 + 0.5 * h, y + 0.5 * k1, *args)
         k3 = h * f(x0 + 0.5 * h, y + 0.5 * k2, *args)
@@ -90,11 +90,8 @@ class JilesAthertonFormulas:
             + isotropic.c / (1 + isotropic.c) * dm_an_dh
 
 class JilesAthertonModel: 
-    def __init__(self, delta_h: float = 20, initial_position: int = 125) -> None:
-        self.initial_position = initial_position
-        self.plotting_steps = initial_position * 5
-        self.isotropic = self.anisotropic = None
-        self.fill_h(delta_h, initial_position, initial_position * 2)
+    def __init__(self) -> None:
+        self.anisotropic = self.isotropic = self.h = self.initial_position = None
 
     def fill_h(self, delta_h: float, initial_position: int, hysteresis_peak: int) -> None:
         self.h = [0]
@@ -114,7 +111,11 @@ class JilesAthertonModel:
     def set_anisotropic(self, coefficients: AnisotropicCoefficients) -> None:
         self.anisotropic = coefficients
 
-    def plot(self) -> None:
+    def get_plot_data(self, delta_h: float = 20, initial_position: int = 125):
+        self.fill_h(delta_h, initial_position, initial_position * 2)
+        self.initial_position = initial_position
+        plotting_steps = initial_position * 5
+
         delta = [0]
         for i in range(len(self.h) - 1):
             if self.h[i + 1] > self.h[i]:
@@ -125,7 +126,7 @@ class JilesAthertonModel:
         Man = [0]
         m = [0]
 
-        for i in range(self.plotting_steps):
+        for i in range(plotting_steps):
             h_e = JilesAthertonFormulas.get_h_e(self.h[i + 1], self.isotropic.alpha, m[i])
             m_an = JilesAthertonFormulas.get_m_an(h_e, self.isotropic, self.anisotropic)
             Man.append(m_an)
@@ -137,21 +138,14 @@ class JilesAthertonModel:
 
         B = [MU_0 * i for i in m]
 
-        plt.plot(self.h, B)
-        plt.show()
+        fig = plt.figure(figsize=(20, 10), facecolor="#2f2e30")
+        ax = plt.subplot(1, 1, (1, 1))
+        ax.set_facecolor("#5a595b")
 
+        ax.plot(self.h, B, linewidth=1)
+        ax.set_xlabel('H, A/m')
+        ax.set_ylabel('B, T')
 
-
-a = 470 # A/m
-alpha = 9.38e-4
-c = 0.0889
-k = 483 # A/m
-ms = 1.48e6 # A/m
-
-
-model = JilesAthertonModel()
-coefs = IsotropicCoefficients(a, alpha, ms, k, c)
-model.set_isotropic(coefs)
-model.plot()
+        return (fig, ax)
 
 
