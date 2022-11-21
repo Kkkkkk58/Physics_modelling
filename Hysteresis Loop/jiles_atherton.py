@@ -138,14 +138,26 @@ class JilesAthertonModel:
 
         B = [MU_0 * i for i in m]
 
-        fig = plt.figure(figsize=(20, 10), facecolor="#2f2e30")
+        fig = plt.figure(figsize=(9, 9), facecolor="#2f2e30")
         ax = plt.subplot(1, 1, (1, 1))
-        ax.set_facecolor("#5a595b")
-
         ax.plot(self.h, B, linewidth=1)
+        self.set_colors(ax)
+        ax.grid(color='black')
         ax.set_xlabel('H, A/m')
         ax.set_ylabel('B, T')
 
         return (fig, ax)
+
+    def set_colors(self, ax):
+        ax.set_facecolor("#b3b3b3")
+        ax.spines['bottom'].set_color("#b3b3b3")
+        ax.spines['left'].set_color("#b3b3b3")
+        ax.spines['right'].set_color("#b3b3b3")
+        ax.spines['top'].set_color("#b3b3b3")
+        ax.xaxis.label.set_color("#b3b3b3")
+        ax.yaxis.label.set_color("#b3b3b3")
+        ax.tick_params(axis='x', colors="#b3b3b3")
+        ax.tick_params(axis='y', colors="#b3b3b3")
+
 
 

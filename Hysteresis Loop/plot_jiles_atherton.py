@@ -10,11 +10,11 @@ class PlotJilesAtherton:
         self.jiles_atherton.set_anisotropic(anisotropic)
         self.fig, self.ax = self.jiles_atherton.get_plot_data()
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
-        self.canvas.get_tk_widget().grid(row=0, column=0, columnspan=2, pady=0, padx=0, ipadx=0, sticky="nswe")
+        self.canvas.get_tk_widget().grid(row=1, column=0, columnspan=2, pady=0, padx=0, ipadx=0, sticky="nswe")
 
     def display(self):
         self.canvas.draw()
     
     def reset(self):
         self.canvas.flush_events()
-        self.canvas.delete("all")
+        # self.canvas.delete("all")

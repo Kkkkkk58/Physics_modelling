@@ -310,15 +310,18 @@ class PreisachModel:
 
         frames = len(self.historyInterfaceX)
 
-        gs = gridspec.GridSpec(1, 3, height_ratios=[1], width_ratios=[1, 1, 1])
-        facecolor = "#5a595b"
-        fig1 = plt.figure(figsize=(20, 10), facecolor="#2f2e30")
+        gs = gridspec.GridSpec(1, 3, height_ratios=[1], width_ratios=[1, 1, 1], wspace=0.4)
+        facecolor = "#b3b3b3"
+        fig1 = plt.figure(figsize=(9, 3), facecolor="#2f2e30")
         ax1 = plt.subplot(gs[0, 0])
         ax1.set_facecolor(facecolor)
+        self.set_colors(ax1)
         ax2 = plt.subplot(gs[0, 1])
         ax2.set_facecolor(facecolor)
+        self.set_colors(ax2)
         ax3 = plt.subplot(gs[0, 2])
         ax3.set_facecolor(facecolor)
+        self.set_colors(ax3)
 
         # create plot of input
         ax1.plot(self.historyU, linewidth=1)
@@ -345,7 +348,7 @@ class PreisachModel:
 
         simulation = animation.FuncAnimation(fig1, update_line, frames,
                                              fargs=(self, line1, line2, line3), interval=25,
-                                             blit=True, repeat=False)
+                                             blit=True, repeat=True)
 
         return (simulation, fig1, ax1, ax2, ax3)
 
@@ -405,6 +408,18 @@ class PreisachModel:
         for i in range(len(input)):
             middle[i] = self(input[i])
             output[i] = self.invModel(middle[i])
+
+    def set_colors(self, ax):
+        ax.grid(color='black')
+        ax.set_facecolor("#b3b3b3")
+        ax.spines['bottom'].set_color("#b3b3b3")
+        ax.spines['left'].set_color("#b3b3b3")
+        ax.spines['right'].set_color("#b3b3b3")
+        ax.spines['top'].set_color("#b3b3b3")
+        ax.xaxis.label.set_color("#b3b3b3")
+        ax.yaxis.label.set_color("#b3b3b3")
+        ax.tick_params(axis='x', colors="#b3b3b3")
+        ax.tick_params(axis='y', colors="#b3b3b3")
 
 # Basic example of Preisach model usage
 def exampleHysteresis():
