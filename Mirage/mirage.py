@@ -39,7 +39,7 @@ class Mirage:
                 k = min(k, i + 100)
             i += 1
             
-        fig = plt.figure(figsize=(9, 9), facecolor="#2f2e30")
+        fig = plt.figure(figsize=(8, 8), facecolor="#2f2e30")
         ax1 = plt.subplot(1, 2, 1)
         ax1.plot(x, y, linewidth=1)
         self.set_colors(ax1)

@@ -18,12 +18,12 @@ def is_float(element: any) -> bool:
 
 class App(customtkinter.CTk):
 
-    WIDTH = 1080
-    HEIGHT = 720
+    WIDTH = 1920
+    HEIGHT = 1080
     REQUESTS = {
-        Values.INITIAL_REFRACTIVE_INDEX: "Показатель преломления на начальной высоте",
+        Values.INITIAL_REFRACTIVE_INDEX: "Показатель преломления\nна начальной высоте",
         Values.ANGLE: "Начальный угол падения",
-        Values.REFRACTIVE_INDEX_COEFFICIENT: "Коэффициент убывания показателя преломления"
+        Values.REFRACTIVE_INDEX_COEFFICIENT: "Коэффициент убывания\nпоказателя преломления"
         }
     LABELS = []
     ENTRIES = []
@@ -34,26 +34,7 @@ class App(customtkinter.CTk):
         self.title("Mirage Model by A.Gogolev & K.Khasan")
         self.geometry(f"{App.WIDTH}x{App.HEIGHT}")
         self.protocol("WM_DELETE_WINDOW", self.on_closing)  # call .on_closing() when app gets closed
-
-        # # ============ frame_left ============
-        # self.frame_left = customtkinter.CTkFrame(master=self,
-        #                                          width=180,
-        #                                          corner_radius=0)
-        # self.frame_left.grid(row=0, column=0, sticky="nswe")
-        # self.init_left_frame_grid()
-
-        # # ============ frame_mid ============
-        # self.frame_mid = customtkinter.CTkFrame(master=self, width=540, corner_radius=20)
-        # self.frame_mid.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
-        # self.init_mid_frame_grid()
-
-        # # ============ frame_right ============
-        # self.frame_right = customtkinter.CTkFrame(master=self)
-        # self.frame_right.grid(row=0, column=2, sticky="nswe", padx=20, pady=20)
-        # self.init_right_frame_grid()
-
-
-
+        
         # ============ create two frames ============
 
         # configure grid layout (2x1)
@@ -108,7 +89,7 @@ class App(customtkinter.CTk):
         self.left_frame_elements.append(self.confirm_button)
 
         # ============ frame_mid ============
-        self.frame_mid = customtkinter.CTkFrame(master=self, width=540, corner_radius=20)
+        self.frame_mid = customtkinter.CTkFrame(master=self, width=720, corner_radius=20)
         self.frame_mid.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
         self.init_mid_frame_grid()
 
