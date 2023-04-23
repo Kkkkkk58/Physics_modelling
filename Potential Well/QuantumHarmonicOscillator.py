@@ -1,10 +1,7 @@
 import numpy
 import numpy as np
 import scipy.constants as constants
-from scipy.special import hermite
-from math import factorial
-from math import sqrt
-from math import pow
+from scipy.special import hermite, factorial
 
 
 class QuantumHarmonicOscillator:
@@ -20,9 +17,9 @@ class QuantumHarmonicOscillator:
 
     def get_nth_wave_function(self, n):
         nth_hermite = hermite(n)
-        return lambda x: 1 / sqrt(2**n * factorial(n)) \
+        return lambda x: 1 / np.sqrt(2**n * factorial(n)) \
                + pow(self.m * self.omega / (constants.pi * constants.hbar), 1/4) \
-               * nth_hermite(sqrt(self.m * self.omega / constants.hbar) * x) \
+               * nth_hermite(np.sqrt(self.m * self.omega / constants.hbar) * x) \
                * np.exp(-self.m * self.omega * x ** 2 / constants.hbar)
 
     def get_nth_wave_function_vals(self, n):
