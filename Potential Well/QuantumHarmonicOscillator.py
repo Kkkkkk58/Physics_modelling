@@ -13,7 +13,7 @@ class QuantumHarmonicOscillator:
         self.discrete_x = numpy.linspace(-a, a, num_of_discrete_x_vals)
 
     def get_eigen_values_inclusively(self, n):
-        return constants.hbar * self.omega * np.arange(n + 1)
+        return constants.hbar * self.omega * (np.arange(n + 1) + 0.5)
 
     def get_nth_wave_function(self, n):
         nth_hermite = hermite(n)
