@@ -14,7 +14,7 @@ class QuantumHarmonicOscillator(PotentialWell):
         self.num_of_discrete_x_vals = num_of_discrete_x_vals
         self.discrete_x = numpy.linspace(-a, a, num_of_discrete_x_vals)
 
-    def get_eigen_values(self, n):
+    def get_eigen_values(self, n=4):
         return constants.hbar * self.omega * (np.arange(n + 1) + 0.5)
 
     def get_nth_wave_function(self, n):

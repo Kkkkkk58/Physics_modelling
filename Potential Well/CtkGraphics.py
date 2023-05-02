@@ -5,6 +5,7 @@ from Values import Values
 from Plotter import Plotter
 from PIL import Image
 from DiscreteDomainFiniteSquareWell import DiscreteDomainFiniteSquareWell
+from QuantumHarmonicOscillator  import QuantumHarmonicOscillator
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("green")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -30,7 +31,9 @@ class App(customtkinter.CTk):
     REQUESTS = {
         Values.POTENTIAL_WELL_WIDTH: "Ширина потенциальной ямы",
         Values.POTENTIAL_DEPTH: "Глубина потенциальной ямы",
-        Values.IS_PERMEABLE: "Проницаемость барьера потенциальной ямы"
+        Values.IS_PERMEABLE: "Проницаемость барьера потенциальной ямы",
+        Values.MASS: "Масса частицы",
+        Values.ANGULAR_FREQUENCY: "Частота колебаний осциллятора"
     }
     LABELS = []
     ENTRIES = []
@@ -42,30 +45,80 @@ class App(customtkinter.CTk):
         self.geometry(f"{App.WIDTH}x{App.HEIGHT}")
         self.protocol("WM_DELETE_WINDOW", self.on_closing)  # call .on_closing() when app gets closed
 
-        # ============ create two frames ============
-
         # configure grid layout (2x1)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
+        # ============ frame_left ============
         self.frame_left = customtkinter.CTkFrame(master=self,
                                                  width=180,
                                                  corner_radius=0)
         self.frame_left.grid(row=0, column=0, sticky="nswe")
+        self.init_left_frame_grid()
 
+        # ============ frame_mid ============
+        self.frame_mid = customtkinter.CTkFrame(master=self, width=540, corner_radius=20)
+        self.frame_mid.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
+        self.init_mid_frame_grid()
+
+        # ============ frame_right ============
         self.frame_right = customtkinter.CTkFrame(master=self)
         self.frame_right.grid(row=0, column=2, sticky="nswe", padx=20, pady=20)
+        self.init_right_frame_grid()
+
+        self.potential_well_button = customtkinter.CTkButton(master=self.frame_right, height=40, fg_color=None,
+                                                       text="Потенциальная яма",
+                                                       border_width=3, command=self.init_potential_well)
+        self.potential_well_button.grid(row=1, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
+        self.oscillator_button = customtkinter.CTkButton(master=self.frame_right, height=40, fg_color=None,
+                                                       text="Гармоничечский осциллятор",
+                                                       border_width=3, command=self.init_oscillator)
+        self.oscillator_button.grid(row=2, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
 
         # ============ frame_left ============ #
 
         self.frame_left.grid_rowconfigure(13, minsize=75)
         self.entries = []
         self.left_frame_elements = []
+
+    def init_right_frame_grid(self):
+        # configure grid layout (3x7)
+        self.frame_right.rowconfigure((0, 1, 2, 3), weight=1)
+        self.frame_right.rowconfigure(5, weight=10)
+        self.frame_right.columnconfigure((0, 1), weight=1)
+        self.frame_right.columnconfigure(2, weight=0)
+        self.right_frame_elements = []
+
+    def init_mid_frame_grid(self):
+        self.frame_mid.rowconfigure(0, weight=1)
+        self.frame_mid.rowconfigure(1, weight=2)
+        self.frame_mid.rowconfigure(2, weight=1)
+
+    def init_left_frame_grid(self):
+        # self.frame_left.grid_rowconfigure((0, 1, 2, 3), minsize=35)
+        # self.frame_left.grid_rowconfigure(13, minsize=80)
+        self.entries = []
+        self.left_frame_elements = []
+
+    def init_potential_well(self):
+        self.reset_frame()
+
+        self.init_confirm_button(self.confirm_event_potential_well, 20)
+
+        self.init_start_button(self.start_plotting)
+
+        self.init_reset_button(self.reset_frame)
+
+        self.init_disabled_buttons()
+
+        self.init_potential_well_left_frame()
+
+    def init_potential_well_left_frame(self):
         # Input potential well width
         self.label_well_width = customtkinter.CTkLabel(master=self.frame_left,
                                                text=App.REQUESTS[Values.POTENTIAL_WELL_WIDTH])
         self.label_well_width.grid(row=0, column=0, pady=10, padx=10)
-        self.entry_well_width = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="0.000004")
+        self.entry_well_width = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="3")
         self.entry_well_width.grid(row=1, column=0, columnspan=2, pady=0, padx=10)
         self.entries.append(self.entry_well_width)
         self.left_frame_elements.append(self.entry_well_width)
@@ -93,47 +146,86 @@ class App(customtkinter.CTk):
         #                                                    value=True)
         # self.radio_button_is_impermeable.grid(row=6, column=0, pady=10, padx=20)
 
-        # Confirm Button
+    def init_oscillator(self):
 
-        self.confirm_button = customtkinter.CTkButton(master=self.frame_left, height=40, text="Ввести данные",
-                                                      border_width=3,
-                                                      fg_color=None, command=self.confirm_event)
-        self.confirm_button.grid(row=13, column=0, padx=10)
+        self.reset_frame()
+
+        self.init_confirm_button(self.confirm_event_oscillator, 20)
+
+        self.init_start_button(self.start_plotting)
+
+        self.init_reset_button(self.reset_frame)
+
+        self.init_disabled_buttons()
+
+        self.init_oscillator_left_frame()
+
+    def init_oscillator_left_frame(self):
+        self.entries = []
+        self.left_frame_elements = []
+        # Input potential well width
+        self.label_well_width = customtkinter.CTkLabel(master=self.frame_left,
+                                                       text=App.REQUESTS[Values.POTENTIAL_WELL_WIDTH])
+        self.label_well_width.grid(row=0, column=0, pady=10, padx=10)
+        self.entry_well_width = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="0.000004")
+        self.entry_well_width.grid(row=1, column=0, columnspan=2, pady=0, padx=10)
+        self.entries.append(self.entry_well_width)
+        self.left_frame_elements.append(self.entry_well_width)
+
+        # Input mass
+        self.label_mass = customtkinter.CTkLabel(master=self.frame_left,
+                                                       text=App.REQUESTS[Values.MASS])
+        self.label_mass.grid(row=2, column=0, pady=10, padx=10)
+        self.entry_mass = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="0.000004")
+        self.entry_mass.grid(row=3, column=0, columnspan=2, pady=0, padx=10)
+        self.entries.append(self.entry_mass)
+        self.left_frame_elements.append(self.entry_mass)
+
+        # Input frequency
+        self.label_frequency = customtkinter.CTkLabel(master=self.frame_left,
+                                                 text=App.REQUESTS[Values.ANGULAR_FREQUENCY])
+        self.label_frequency.grid(row=4, column=0, pady=10, padx=10)
+        self.entry_frequency = customtkinter.CTkEntry(master=self.frame_left, width=80, placeholder_text="0.000004")
+        self.entry_frequency.grid(row=5, column=0, columnspan=2, pady=0, padx=10)
+        self.entries.append(self.entry_frequency)
+        self.left_frame_elements.append(self.entry_frequency)
+
+    def reset_frame(self):
+        self.frame_left.grid_forget()
+
+        self.frame_left = customtkinter.CTkFrame(master=self,
+                                                 width=180,
+                                                 corner_radius=0)
+        self.frame_left.grid(row=0, column=0, sticky="nswe")
+
+    def init_confirm_button(self, handler_command, curr_row):
+        self.confirm_button = customtkinter.CTkButton(master=self.frame_left, height=40, fg_color=None,
+                                                      text="Ввести данные",
+                                                      border_width=3, command=handler_command)
+        self.confirm_button.grid(row=curr_row, column=0, padx=20, pady=20)
         self.left_frame_elements.append(self.confirm_button)
 
-        # ============ frame_mid ============
-        self.frame_mid = customtkinter.CTkFrame(master=self, width=720, corner_radius=20)
-        self.frame_mid.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
-        self.init_mid_frame_grid()
-
-        # ============ frame_right ============
-
-        # configure grid layout (3x7)
-        self.init_right_frame_grid()
-
-        # ============ frame_right ============
-
-        self.curr_page = 1
+    def init_start_button(self, handler_command):
         self.start_button = customtkinter.CTkButton(master=self.frame_right,
-                                                    height=40,
+                                                    height=50,
                                                     text="Пуск",
-                                                    command=self.start_plotting)
+                                                    command=handler_command)
+        self.start_button.grid(row=5, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
+        self.right_frame_elements.append(self.start_button)
+
+    def init_reset_button(self, reset_func):
         self.start_button.grid(row=6, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
         self.right_frame_elements.append(self.start_button)
         self.reset_button = customtkinter.CTkButton(master=self.frame_right,
-                                                    height=40,
+                                                    height=50,
                                                     text="Сброс",
                                                     border_width=3,  # <- custom border_width
                                                     fg_color=None,  # <- no fg_color
-                                                    command=self.reset)
+                                                    command=reset_func)
         self.reset_button.grid(row=7, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
         self.right_frame_elements.append(self.reset_button)
-        self.help_button = customtkinter.CTkButton(master=self.frame_right,
-                                                   height=40,
-                                                   text="Справка",
-                                                   command=self.display_help)
-        self.help_button.grid(row=8, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
 
+    def init_disabled_buttons(self):
         for elem in self.right_frame_elements:
             elem.configure(state=tkinter.DISABLED)
         self.parameters_pack = []
@@ -152,7 +244,7 @@ class App(customtkinter.CTk):
         self.frame_mid.rowconfigure(1, weight=2)
         self.frame_mid.rowconfigure(2, weight=1)
 
-    def confirm_event(self):
+    def confirm_event_potential_well(self):
         parameters_pack = [self.entry_well_width.get(), self.entry_well_depth.get()]
         if any([len(str(x)) == 0 or not is_float(str(x)) for x in parameters_pack]):
             messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
@@ -163,6 +255,23 @@ class App(customtkinter.CTk):
 
             self.parameters_pack = [transform(x) for x in parameters_pack]
             self.parameters_pack = [DiscreteDomainFiniteSquareWell(self.parameters_pack[0], self.parameters_pack[1])]
+            print(self.parameters_pack)
+            for elem in self.left_frame_elements:
+                elem.configure(state=tkinter.DISABLED)
+            for elem in self.right_frame_elements:
+                elem.configure(state=tkinter.NORMAL)
+
+    def confirm_event_oscillator(self):
+        parameters_pack = [self.entry_well_width.get(), self.entry_frequency.get(), self.entry_mass.get()]
+        if any([len(str(x)) == 0 or not is_float(str(x)) for x in parameters_pack]):
+            messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
+
+        else:
+            def transform(x):
+                return float(str(x))
+
+            self.parameters_pack = [transform(x) for x in parameters_pack]
+            self.parameters_pack = [QuantumHarmonicOscillator(self.parameters_pack[0], self.parameters_pack[1], self.parameters_pack[2])]
             print(self.parameters_pack)
             for elem in self.left_frame_elements:
                 elem.configure(state=tkinter.DISABLED)

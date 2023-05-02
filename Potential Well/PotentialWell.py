@@ -1,5 +1,5 @@
 class PotentialWell:
-    def __init__():
+    def __init__(self):
         pass
 
     def get_eigen_values(self, n):
