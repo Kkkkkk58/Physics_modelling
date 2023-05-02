@@ -1,3 +1,4 @@
-
+from CtkGraphics import App
 if __name__ == "__main__":
-    print("СЫНУЛЯ")
+    app = App()
+    app.start()

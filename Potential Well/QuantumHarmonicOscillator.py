@@ -5,7 +5,7 @@ from scipy.special import hermite, factorial
 
 
 class QuantumHarmonicOscillator:
-    def __init__(self, m, omega, a, num_of_discrete_x_vals):
+    def __init__(self, a, omega, m, num_of_discrete_x_vals=10000):
         self.a = a
         self.m = m
         self.omega = omega
@@ -25,3 +25,6 @@ class QuantumHarmonicOscillator:
     def get_nth_wave_function_vals(self, n):
         nth_function = self.get_nth_wave_function(n)
         return nth_function(self.discrete_x)
+
+    def get_x(self):
+        return self.discrete_x
