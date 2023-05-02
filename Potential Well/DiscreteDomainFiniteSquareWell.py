@@ -2,11 +2,13 @@ import math
 
 import numpy
 import numpy as np
+from PotentialWell import PotentialWell
 from scipy.linalg import eigh_tridiagonal
 
 
-class DiscreteDomainFiniteSquareWell:
+class DiscreteDomainFiniteSquareWell(PotentialWell):
     def __init__(self, a, U0,  num_of_discrete_x_vals=10000):
+    
         self.num_of_discrete_x_vals = num_of_discrete_x_vals
         self.a = a
         self.left_x = numpy.linspace(-2 * self.a, -self.a, 2 * self.num_of_discrete_x_vals)

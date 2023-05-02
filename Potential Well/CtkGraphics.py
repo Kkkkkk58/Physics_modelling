@@ -4,6 +4,7 @@ from tkinter import messagebox
 from Values import Values
 from Plotter import Plotter
 from PIL import Image
+from DiscreteDomainFiniteSquareWell import DiscreteDomainFiniteSquareWell
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("green")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -161,6 +162,7 @@ class App(customtkinter.CTk):
                 return float(str(x))
 
             self.parameters_pack = [transform(x) for x in parameters_pack]
+            self.parameters_pack = [DiscreteDomainFiniteSquareWell(self.parameters_pack[0], self.parameters_pack[1])]
             print(self.parameters_pack)
             for elem in self.left_frame_elements:
                 elem.configure(state=tkinter.DISABLED)
