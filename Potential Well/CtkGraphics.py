@@ -78,26 +78,26 @@ class App(customtkinter.CTk):
         self.left_frame_elements.append(self.entry_well_depth)
 
         # Input permeability
-
-        self.is_permeable_var = tkinter.BooleanVar(False)
-        self.label_permeability = customtkinter.CTkLabel(master=self.frame_left,
-                                                         text=App.REQUESTS[Values.IS_PERMEABLE])
-        self.label_permeability.grid(row=4, column=0, pady=10, padx=10)
-        self.radio_button_is_permeable = customtkinter.CTkRadioButton(master=self.frame_left, text="Непроницаемый барьер",
-                                                           variable=self.is_permeable_var,
-                                                           value=False)
-        self.radio_button_is_permeable.grid(row=5, column=0, pady=0, padx=20)
-        self.radio_button_is_impermeable = customtkinter.CTkRadioButton(master=self.frame_left, text="Проницаемый барьер",
-                                                           variable=self.is_permeable_var,
-                                                           value=True)
-        self.radio_button_is_impermeable.grid(row=6, column=0, pady=10, padx=20)
+        #
+        # self.is_permeable_var = tkinter.BooleanVar(False)
+        # self.label_permeability = customtkinter.CTkLabel(master=self.frame_left,
+        #                                                  text=App.REQUESTS[Values.IS_PERMEABLE])
+        # self.label_permeability.grid(row=4, column=0, pady=10, padx=10)
+        # self.radio_button_is_permeable = customtkinter.CTkRadioButton(master=self.frame_left, text="Непроницаемый барьер",
+        #                                                    variable=self.is_permeable_var,
+        #                                                    value=False)
+        # self.radio_button_is_permeable.grid(row=5, column=0, pady=0, padx=20)
+        # self.radio_button_is_impermeable = customtkinter.CTkRadioButton(master=self.frame_left, text="Проницаемый барьер",
+        #                                                    variable=self.is_permeable_var,
+        #                                                    value=True)
+        # self.radio_button_is_impermeable.grid(row=6, column=0, pady=10, padx=20)
 
         # Confirm Button
 
         self.confirm_button = customtkinter.CTkButton(master=self.frame_left, height=40, text="Ввести данные",
                                                       border_width=3,
                                                       fg_color=None, command=self.confirm_event)
-        self.confirm_button.grid(row=10, column=0, padx=10)
+        self.confirm_button.grid(row=13, column=0, padx=10)
         self.left_frame_elements.append(self.confirm_button)
 
         # ============ frame_mid ============
@@ -152,14 +152,12 @@ class App(customtkinter.CTk):
         self.frame_mid.rowconfigure(2, weight=1)
 
     def confirm_event(self):
-        parameters_pack = [self.entry_well_width.get(), self.entry_well_depth.get(), self.is_permeable_var.get()]
-        if any([len(str(x)) == 0 or (not is_float(str(x)) and not is_bool(x)) for x in parameters_pack]):
+        parameters_pack = [self.entry_well_width.get(), self.entry_well_depth.get()]
+        if any([len(str(x)) == 0 or not is_float(str(x)) for x in parameters_pack]):
             messagebox.showerror(title="АХАХАХАХАХХА", message="ВЫ ВВЕЛИ КРИНЖ")
 
         else:
             def transform(x):
-                if is_bool(x):
-                    return x
                 return float(str(x))
 
             self.parameters_pack = [transform(x) for x in parameters_pack]

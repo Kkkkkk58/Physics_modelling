@@ -6,14 +6,13 @@ from scipy.linalg import eigh_tridiagonal
 
 
 class DiscreteDomainFiniteSquareWell:
-    def __init__(self, a, U0, is_permeable,  num_of_discrete_x_vals=10000):
+    def __init__(self, a, U0,  num_of_discrete_x_vals=10000):
         self.num_of_discrete_x_vals = num_of_discrete_x_vals
         self.a = a
         self.left_x = numpy.linspace(-2 * self.a, -self.a, 2 * self.num_of_discrete_x_vals)
         self.discrete_x = numpy.linspace(-a, a, num_of_discrete_x_vals)
         self.right_x = numpy.linspace(self.a, 2 * self.a, 2 * self.num_of_discrete_x_vals)
 
-        self.is_permeable = is_permeable
         self.dx = np.diff(self.discrete_x)[0]
         self.U0 = U0
 

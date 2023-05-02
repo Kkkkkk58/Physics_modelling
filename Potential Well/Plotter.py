@@ -4,9 +4,9 @@ from DiscreteDomainFiniteSquareWell import DiscreteDomainFiniteSquareWell
 
 
 class Plotter:
-    def __init__(self, frame, well_width, well_depth, is_permeable):
+    def __init__(self, frame, well_width, well_depth):
         self.frame = frame
-        self.finite_well = DiscreteDomainFiniteSquareWell(well_width, well_depth, is_permeable)
+        self.finite_well = DiscreteDomainFiniteSquareWell(well_width, well_depth)
         self.x = self.finite_well.get_x()
         self.eigen_values = self.finite_well.get_eigen_values()
         # self.fig = plt.figure(figsize=(12, 12), facecolor="#2f2e30")
