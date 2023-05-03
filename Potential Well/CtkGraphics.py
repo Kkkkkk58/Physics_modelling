@@ -71,7 +71,7 @@ class App(customtkinter.CTk):
                                                        border_width=3, command=self.init_potential_well)
         self.potential_well_button.grid(row=1, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
         self.oscillator_button = customtkinter.CTkButton(master=self.frame_right, height=40, fg_color=None,
-                                                       text="Гармоничечский осциллятор",
+                                                       text="Гармонический осциллятор",
                                                        border_width=3, command=self.init_oscillator)
         self.oscillator_button.grid(row=2, column=2, columnspan=1, pady=10, padx=20, sticky="nswe")
 
