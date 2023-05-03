@@ -25,7 +25,7 @@ class DiscreteDomainFiniteSquareWell(PotentialWell):
         self.__eigen_values = None
         self.__eigen_vectors = None
 
-    def get_eigen_values(self):
+    def get_eigen_values(self, n=4):
         if self.__eigen_values is None:
             self.__eigen_values, self.__eigen_vectors = eigh_tridiagonal(self.hamiltonian_main_diagonal,
                                                                          self.hamiltonian_off_diagonal, select='v',
@@ -58,6 +58,11 @@ class DiscreteDomainFiniteSquareWell(PotentialWell):
         nth_right_inner_val = self.get_nth_state_eigen_function_vals(n)[-1]
         G = nth_right_inner_val / math.exp(- (self.a ** 2))
         return G * np.exp(-self.a * self.right_x)
+
+    def get_potential_well_vals(self):
+        get_vals = np.vectorize(lambda x: -self.U0 * (-self.a < x < self.a))
+        return get_vals(self.discrete_x)
+
 
     def get_x(self):
         return self.discrete_x

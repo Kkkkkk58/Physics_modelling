@@ -16,12 +16,13 @@ class Plotter:
         print(self.x)
         print(self.eigen_values)
         y_offset = 0
+        # ax2.plot(self.x, self.finite_well.get_potential_well_vals(), linewidth=2)
         for n in range(len(self.eigen_values)):
             y_offset += self.eigen_values[n]
             print(n)
             wave_function_vals = self.finite_well.get_nth_state_eigen_function_vals(n)
             print(wave_function_vals)
-            ax.plot(self.x, (wave_function_vals ** 2 + y_offset), linewidth=2, label=f'{n} Энергетический уровень, {self.eigen_values[n]} В')
+            ax.plot(self.x, (wave_function_vals ** 2 * 1e4 + y_offset), linewidth=2, label=f'{n} Энергетический уровень, {self.eigen_values[n]} В')
             ax2.plot(self.x, wave_function_vals ** 2, linewidth=2)
 
         self.set_colors(ax)
