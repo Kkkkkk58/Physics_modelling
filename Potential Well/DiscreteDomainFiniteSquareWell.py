@@ -63,6 +63,9 @@ class DiscreteDomainFiniteSquareWell(PotentialWell):
         get_vals = np.vectorize(lambda x: -self.U0 * (-self.a < x < self.a))
         return get_vals(self.discrete_x)
 
+    def get_constants(self):
+        return 1e4, 1
+
 
     def get_x(self):
         return self.discrete_x

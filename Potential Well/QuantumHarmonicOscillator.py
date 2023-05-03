@@ -51,3 +51,6 @@ class QuantumHarmonicOscillator(PotentialWell):
 
     def get_x(self):
         return self.discrete_x
+
+    def get_constants(self):
+        return 1, 1e36
